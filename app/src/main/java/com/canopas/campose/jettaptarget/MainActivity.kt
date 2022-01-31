@@ -10,9 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -54,7 +60,9 @@ fun TapTargetButton() {
         TapTarget(targets)
 
         Button(onClick = {
-        },shape = CircleShape, modifier = Modifier.padding(top = 50.dp).align(Alignment.TopEnd)
+        }, shape = CircleShape, modifier = Modifier
+            .padding(top = 50.dp, end = 50.dp)
+            .align(Alignment.TopEnd)
             .onGloballyPositioned { coordinates ->
                 targets.add(
                     TapTargetProperty(
@@ -63,24 +71,10 @@ fun TapTargetButton() {
                         "This is the sample of TapTarget in Jetpack compose"
                     )
                 )
-                Log.e("Tap offset", "coordinates : " + coordinates)
-            }
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        Log.e("Tap offset", "")
-                    },
-                    onDoubleTap = { /* Called on Double Tap */ },
-                    onLongPress = { /* Called on Long Press */ },
-                    onTap = {
-                    }
-                )
             }) {
-            Text(text = "Click me")
+            Text(text = "Button 2")
         }
-
     }
-
 }
 
 @Preview(showBackground = true)
