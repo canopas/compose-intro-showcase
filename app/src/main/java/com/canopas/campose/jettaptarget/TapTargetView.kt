@@ -1,6 +1,5 @@
-package com.canopas.campose.jettaptarget.ui.theme
+package com.canopas.campose.jettaptarget
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -44,149 +43,156 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TapTarget(
     targets: MutableList<TapTargetProperty> = mutableListOf(),
     backgroundColor: Color = Color.Black,
-    radiusColor: Color = Color.White,
     onShowcaseCompleted: () -> Unit
 ) {
     val uniqueTargets = targets.distinctBy { it.tag }.sortedBy { it.index }
-    var currentTargetIndex by remember {
-        mutableStateOf(0)
-    }
+    var currentTargetIndex by remember { mutableStateOf(0) }
 
     val currentTarget =
         if (uniqueTargets.isNotEmpty() && currentTargetIndex < uniqueTargets.size) uniqueTargets[currentTargetIndex] else null
 
-    currentTarget?.let { target ->
-        val screenHeight = LocalConfiguration.current.screenHeightDp
-        val targetCords = target.coordinates
-        val width = targetCords.size.width
-        val height = targetCords.size.height
-        val topArea = 88.dp
-        val density = LocalDensity.current
-        val targetRect = targetCords.boundsInRoot()
-        var textCoordinate: LayoutCoordinates? by remember {
-            mutableStateOf(null)
-        }
 
-        val yOffset = with(density) {
-            targetCords.positionInRoot().y.toDp()
-        }
-
-        val maxDimension = max(width.absoluteValue, height.absoluteValue)
-        val targetRadius = maxDimension / 2f + 40f
-
-        val animationSpec = infiniteRepeatable<Float>(
-            animation = tween(2000, easing = FastOutLinearInEasing),
-            repeatMode = RepeatMode.Restart,
-        )
-
-        var outerXOffset by remember {
-            mutableStateOf(0f)
-        }
-        var outerYOffset by remember {
-            mutableStateOf(0f)
-        }
-
-        var outerRadius by remember {
-            mutableStateOf(0f)
-        }
-
-        textCoordinate?.let { textCoords ->
-            val textRect = textCoords.boundsInRoot()
-
-            val textHeight = textCoords.size.height
-            val isInGutter = topArea > yOffset || yOffset > screenHeight.dp.minus(topArea)
-
-            val outerCircleOffset = getOuterCircleCenter(
-                targetRect, textRect, targetRadius, textHeight, isInGutter
-            )
-
-            outerXOffset = outerCircleOffset.x
-            outerYOffset = outerCircleOffset.y
-
-            outerRadius = getOuterRadius(textRect, targetRect) + targetRadius
-        }
-
-        val outerAnimatable = remember { Animatable(0.6f) }
-
-        val animatables = listOf(
-            remember { Animatable(0f) },
-            remember { Animatable(0f) }
-        )
-
-        LaunchedEffect(currentTarget.tag) {
-            outerAnimatable.snapTo(0.6f)
-
-            outerAnimatable.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = 500,
-                    easing = FastOutSlowInEasing,
-                ),
-            )
-        }
-
-        animatables.forEachIndexed { index, animatable ->
-            LaunchedEffect(animatable) {
-                delay(index * 1000L)
-                animatable.animateTo(
-                    targetValue = 1f, animationSpec = animationSpec
-                )
-            }
-        }
-
-        val dys = animatables.map { it.value }
-        Box {
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(currentTarget) {
-                        detectTapGestures { tapOffeset ->
-                            if (targetRect.contains(tapOffeset)) {
-                                if (++currentTargetIndex >= uniqueTargets.size) {
-                                    onShowcaseCompleted()
-                                }
-                            }
-                        }
-                    }
-                    .graphicsLayer(alpha = 0.99f)
-            ) {
-
-                drawCircle(
-                    color = backgroundColor,
-                    center = Offset(x = outerXOffset, y = outerYOffset),
-                    radius = outerRadius * outerAnimatable.value,
-                    alpha = 0.9f
-                )
-
-                dys.forEach { dy ->
-                    drawCircle(
-                        color = radiusColor,
-                        radius = maxDimension * dy * 2f,
-                        center = targetRect.center,
-                        alpha = 1 - dy
-                    )
-                }
-
-                drawCircle(
-                    color = Color.Transparent,
-                    radius = targetRadius,
-                    center = targetRect.center,
-                    blendMode = BlendMode.Clear
-                )
-
-            }
-
-            ShowCaseText(target, targetRect, targetRadius) {
-                textCoordinate = it
+    currentTarget?.let {
+        TargetContent(it, backgroundColor) {
+            if (++currentTargetIndex >= uniqueTargets.size) {
+                onShowcaseCompleted()
             }
         }
     }
 }
+
+@Composable
+fun TargetContent(
+    target: TapTargetProperty,
+    backgroundColor: Color,
+    onShowcaseCompleted: () -> Unit
+) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+    val targetCords = target.coordinates
+    val topArea = 88.dp
+    val targetRect = targetCords.boundsInRoot()
+    var textCoordinate: LayoutCoordinates? by remember {
+        mutableStateOf(null)
+    }
+
+    val yOffset = with(LocalDensity.current) {
+        targetCords.positionInRoot().y.toDp()
+    }
+
+    val maxDimension =
+        max(targetCords.size.width.absoluteValue, targetCords.size.height.absoluteValue)
+    val targetRadius = maxDimension / 2f + 40f
+
+    val animationSpec = infiniteRepeatable<Float>(
+        animation = tween(2000, easing = FastOutLinearInEasing),
+        repeatMode = RepeatMode.Restart,
+    )
+
+    var outerXOffset by remember {
+        mutableStateOf(0f)
+    }
+    var outerYOffset by remember {
+        mutableStateOf(0f)
+    }
+
+    var outerRadius by remember {
+        mutableStateOf(0f)
+    }
+
+    textCoordinate?.let { textCoords ->
+        val textRect = textCoords.boundsInRoot()
+
+        val textHeight = textCoords.size.height
+        val isInGutter = topArea > yOffset || yOffset > screenHeight.dp.minus(topArea)
+
+        val outerCircleOffset = getOuterCircleCenter(
+            targetRect, textRect, targetRadius, textHeight, isInGutter
+        )
+
+        outerXOffset = outerCircleOffset.x
+        outerYOffset = outerCircleOffset.y
+
+        outerRadius = getOuterRadius(textRect, targetRect) + targetRadius
+    }
+
+    val outerAnimatable = remember { Animatable(0.6f) }
+
+    val animatables = listOf(
+        remember { Animatable(0f) },
+        remember { Animatable(0f) }
+    )
+
+    LaunchedEffect(target.tag) {
+        outerAnimatable.snapTo(0.6f)
+
+        outerAnimatable.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = FastOutSlowInEasing,
+            ),
+        )
+    }
+
+    animatables.forEachIndexed { index, animatable ->
+        LaunchedEffect(animatable) {
+            delay(index * 1000L)
+            animatable.animateTo(
+                targetValue = 1f, animationSpec = animationSpec
+            )
+        }
+    }
+
+    val dys = animatables.map { it.value }
+    Box {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(target) {
+                    detectTapGestures { tapOffeset ->
+                        if (targetRect.contains(tapOffeset)) {
+                            onShowcaseCompleted()
+                        }
+                    }
+                }
+                .graphicsLayer(alpha = 0.99f)
+        ) {
+
+            drawCircle(
+                color = backgroundColor,
+                center = Offset(x = outerXOffset, y = outerYOffset),
+                radius = outerRadius * outerAnimatable.value,
+                alpha = 0.9f
+            )
+
+            dys.forEach { dy ->
+                drawCircle(
+                    color = Color.White,
+                    radius = maxDimension * dy * 2f,
+                    center = targetRect.center,
+                    alpha = 1 - dy
+                )
+            }
+
+            drawCircle(
+                color = Color.Transparent,
+                radius = targetRadius,
+                center = targetRect.center,
+                blendMode = BlendMode.Clear
+            )
+
+        }
+
+        ShowCaseText(target, targetRect, targetRadius) {
+            textCoordinate = it
+        }
+    }
+}
+
 
 @Composable
 fun ShowCaseText(

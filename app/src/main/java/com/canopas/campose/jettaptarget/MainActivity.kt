@@ -49,8 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.jettaptarget.ui.theme.JetTapTargetTheme
 import com.canopas.campose.jettaptarget.ui.theme.Pink
-import com.canopas.campose.jettaptarget.ui.theme.TapTarget
-import com.canopas.campose.jettaptarget.ui.theme.TapTargetProperty
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
