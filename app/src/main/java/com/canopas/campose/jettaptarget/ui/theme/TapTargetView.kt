@@ -1,12 +1,14 @@
 package com.canopas.campose.jettaptarget.ui.theme
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,9 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
@@ -39,13 +44,21 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
-
+fun TapTarget(
+    targets: MutableList<TapTargetProperty> = mutableListOf(),
+    backgroundColor: Color = Color.Black,
+    radiusColor: Color = Color.White,
+    onShowcaseCompleted: () -> Unit
+) {
+    val uniqueTargets = targets.distinctBy { it.tag }.sortedBy { it.index }
     var currentTargetIndex by remember {
         mutableStateOf(0)
     }
-    val currentTarget = if (targets.isNotEmpty()) targets[currentTargetIndex] else null
+
+    val currentTarget =
+        if (uniqueTargets.isNotEmpty() && currentTargetIndex < uniqueTargets.size) uniqueTargets[currentTargetIndex] else null
 
     currentTarget?.let { target ->
         val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -54,20 +67,17 @@ fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
         val height = targetCords.size.height
         val topArea = 88.dp
         val density = LocalDensity.current
-
+        val targetRect = targetCords.boundsInRoot()
         var textCoordinate: LayoutCoordinates? by remember {
             mutableStateOf(null)
         }
 
-        val xOffset = with(density) {
-            targetCords.positionInRoot().x.toDp()
-        }
         val yOffset = with(density) {
             targetCords.positionInRoot().y.toDp()
         }
 
         val maxDimension = max(width.absoluteValue, height.absoluteValue)
-        val targetRadius = maxDimension / 2f + 10f
+        val targetRadius = maxDimension / 2f + 40f
 
         val animationSpec = infiniteRepeatable<Float>(
             animation = tween(2000, easing = FastOutLinearInEasing),
@@ -86,79 +96,92 @@ fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
         }
 
         textCoordinate?.let { textCoords ->
+            val textRect = textCoords.boundsInRoot()
+
             val textHeight = textCoords.size.height
             val isInGutter = topArea > yOffset || yOffset > screenHeight.dp.minus(topArea)
 
             val outerCircleOffset = getOuterCircleCenter(
-                targetCords.boundsInParent(),
-                textCoords.boundsInParent(), targetRadius, textHeight, isInGutter
+                targetRect, textRect, targetRadius, textHeight, isInGutter
             )
 
             outerXOffset = outerCircleOffset.x
             outerYOffset = outerCircleOffset.y
 
-            outerRadius = getOuterRadius(
-                textCoords.boundsInParent(),
-                targetCords.boundsInParent(),
-                topArea > yOffset
-            ) + targetRadius
+            outerRadius = getOuterRadius(textRect, targetRect) + targetRadius
         }
 
-        Box(
-            modifier = Modifier
-        ) {
+        val outerAnimatable = remember { Animatable(0.6f) }
 
-            val animatables = listOf(
-                remember { Animatable(0f) },
-                remember { Animatable(0f) }
+        val animatables = listOf(
+            remember { Animatable(0f) },
+            remember { Animatable(0f) }
+        )
+
+        LaunchedEffect(currentTarget.tag) {
+            outerAnimatable.snapTo(0.6f)
+
+            outerAnimatable.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = FastOutSlowInEasing,
+                ),
             )
+        }
 
-            animatables.forEachIndexed { index, animatable ->
-                LaunchedEffect(animatable) {
-                    delay(index * 1000L)
-                    animatable.animateTo(
-                        targetValue = 1f, animationSpec = animationSpec
-                    )
-                }
+        animatables.forEachIndexed { index, animatable ->
+            LaunchedEffect(animatable) {
+                delay(index * 1000L)
+                animatable.animateTo(
+                    targetValue = 1f, animationSpec = animationSpec
+                )
             }
+        }
 
-            val dys = animatables.map { it.value }
+        val dys = animatables.map { it.value }
+        Box {
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
+                    .pointerInput(currentTarget) {
+                        detectTapGestures { tapOffeset ->
+                            if (targetRect.contains(tapOffeset)) {
+                                if (++currentTargetIndex >= uniqueTargets.size) {
+                                    onShowcaseCompleted()
+                                }
+                            }
+                        }
+                    }
+                    .graphicsLayer(alpha = 0.99f)
             ) {
-                drawCircle(
-                    color = Purple700,
-                    center = Offset(x = outerXOffset, y = outerYOffset),
-                    radius = outerRadius,
-                    alpha = 0.8f
-                )
-            }
 
-            Canvas(modifier = Modifier
-                .fillMaxSize()
-                .offset(xOffset, yOffset)
-                .clickable {
-                    currentTargetIndex++
-                }) {
+                drawCircle(
+                    color = backgroundColor,
+                    center = Offset(x = outerXOffset, y = outerYOffset),
+                    radius = outerRadius * outerAnimatable.value,
+                    alpha = 0.9f
+                )
 
                 dys.forEach { dy ->
                     drawCircle(
-                        color = Color.White,
-                        radius = maxDimension * dy,
-                        center = Offset(width / 2f, height / 2f),
+                        color = radiusColor,
+                        radius = maxDimension * dy * 2f,
+                        center = targetRect.center,
                         alpha = 1 - dy
                     )
                 }
 
                 drawCircle(
-                    color = Color.White,
+                    color = Color.Transparent,
                     radius = targetRadius,
-                    center = Offset(width / 2f, height / 2f)
+                    center = targetRect.center,
+                    blendMode = BlendMode.Clear
                 )
+
             }
 
-            ShowCaseText(target, targetCords.boundsInParent(), targetRadius) {
+            ShowCaseText(target, targetRect, targetRadius) {
                 textCoordinate = it
             }
         }
@@ -177,34 +200,33 @@ fun ShowCaseText(
         mutableStateOf(0f)
     }
 
-    val textSpacing = 40f
-
     Column(modifier = Modifier
         .offset(y = with(LocalDensity.current) {
             txtOffsetY.toDp()
         })
-        .padding(16.dp)
         .onGloballyPositioned {
             onGloballyPositioned(it)
             val textHeight = it.size.height
 
             val possibleTop =
-                boundsInParent.center.y - targetRadius - textHeight - textSpacing
+                boundsInParent.center.y - targetRadius - textHeight
 
             txtOffsetY = if (possibleTop > 0) {
                 possibleTop
             } else {
-                boundsInParent.center.y + targetRadius + textSpacing
+                boundsInParent.center.y + targetRadius
             }
-        })
+        }
+        .padding(16.dp)
+    )
     {
         Text(
             text = currentTarget.title,
             fontSize = 24.sp,
-            color = Color.White,
+            color = currentTarget.subTitleColor,
             fontWeight = FontWeight.Bold
         )
-        Text(text = currentTarget.subTitle, fontSize = 16.sp, color = Color.White)
+        Text(text = currentTarget.subTitle, fontSize = 16.sp, color = currentTarget.subTitleColor)
     }
 
 }
@@ -246,7 +268,7 @@ fun getOuterCircleCenter(
     return Offset(outerCenterX, outerCenterY)
 }
 
-fun getOuterRadius(textRect: Rect, targetRect: Rect, inGutter: Boolean): Float {
+fun getOuterRadius(textRect: Rect, targetRect: Rect): Float {
 
     val topLeftX = min(textRect.topLeft.x, targetRect.topLeft.x)
     val topLeftY = min(textRect.topLeft.y, targetRect.topLeft.y)
@@ -264,6 +286,9 @@ fun getOuterRadius(textRect: Rect, targetRect: Rect, inGutter: Boolean): Float {
 }
 
 data class TapTargetProperty(
+    val tag: String,
+    val index: Int,
     val coordinates: LayoutCoordinates,
-    val title: String, val subTitle: String
+    val title: String, val subTitle: String,
+    val titleColor: Color = Color.White, val subTitleColor: Color = Color.White,
 )
