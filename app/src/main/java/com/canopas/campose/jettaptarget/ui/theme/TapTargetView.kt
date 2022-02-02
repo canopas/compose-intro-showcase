@@ -37,6 +37,8 @@ import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 @Composable
 fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
@@ -91,42 +93,42 @@ fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
         }
 
         textCoordinate?.let { textCoords ->
-            var outerCenterX = 0f
-            var outerCenterY = 0f
-            if (topArea > yOffset) {
-                outerCenterX = targetCoords.positionInRoot().x
-                outerCenterY = targetCoords.positionInRoot().y
-            } else {
-                val textHeight = textCoords.size.height
+            var outerCenterX: Float
+            var outerCenterY: Float
+            val textHeight = textCoords.size.height
 
-                val onTop =
-                    targetCoords.boundsInParent().center.y - targetRadius - textHeight > 0
+            val onTop =
+                targetCoords.boundsInParent().center.y - targetRadius - textHeight > 0
 
-                val left = min(
-                    textCoords.boundsInParent().left,
-                    targetCoords.boundsInParent().left - targetRadius
-                )
-                val right = max(
-                    textCoords.boundsInParent().right,
-                    targetCoords.boundsInParent().right + targetRadius
-                )
+            val left = min(
+                textCoords.boundsInParent().left,
+                targetCoords.boundsInParent().left - targetRadius
+            )
+            val right = max(
+                textCoords.boundsInParent().right,
+                targetCoords.boundsInParent().right + targetRadius
+            )
 
-                val centerY =
-                    if (onTop) targetCoords.boundsInParent().center.y - targetRadius -
-                            textHeight else targetCoords.boundsInParent().center.y + targetRadius + textHeight
+            val centerY =
+                if (onTop) targetCoords.boundsInParent().center.y - targetRadius - textHeight
+                else targetCoords.boundsInParent().center.y + targetRadius + textHeight
 
-                outerCenterY = centerY
+            outerCenterY = centerY
+            outerCenterX = (left + right) / 2
+
+            if (topArea > yOffset || yOffset > screenHeight.dp.minus(topArea)) {
                 outerCenterX = (left + right) / 2
+                outerCenterY = targetCoords.boundsInParent().center.y
             }
 
             parentXOffset = outerCenterX
             parentYOffset = outerCenterY
 
-
-            Log.e(
-                "offset",
-                "parentXOffset: $parentXOffset parentYOffset $parentYOffset outerCenter $outerCenterX y $outerCenterY"
-            )
+            outerRadius = getOuterRadius(
+                textCoords.boundsInParent(),
+                targetCoords.boundsInParent(),
+                topArea > yOffset
+            ) + targetRadius
         }
 
         Box(
@@ -152,10 +154,20 @@ fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
                 modifier = Modifier
                     .fillMaxSize()
             ) {
+                textCoordinate?.let {
+                    val outerRadius =
+                        getOuterRect(it.boundsInParent(), targetCoords.boundsInParent())
+                    drawLine(
+                        color = Color.Red,
+                        start = outerRadius.topLeft,
+                        end = outerRadius.bottomRight
+                    )
+                }
+
                 drawCircle(
                     color = Purple700,
                     center = Offset(x = parentXOffset, y = parentYOffset),
-                   // radius = outerRadius,
+                    radius = outerRadius,
                     alpha = 0.8f
                 )
             }
@@ -168,10 +180,9 @@ fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
                 }) {
 
                 dys.forEach { dy ->
-                    val minRadius = min(size.minDimension / 3f, minDimension * dy * 4f)
                     drawCircle(
                         color = Color.White,
-                        radius = minRadius,
+                        radius = minDimension * dy * 4f,
                         center = Offset(width / 2f, height / 2f),
                         alpha = 1 - dy
                     )
@@ -203,23 +214,55 @@ fun TapTarget(targets: List<TapTargetProperty> = emptyList()) {
                     }
                 })
             {
-                Text(text = currentTarget.title, fontSize = 24.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                Text(
+                    text = currentTarget.title,
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
                 Text(text = currentTarget.subTitle, fontSize = 16.sp, color = Color.White)
             }
         }
     }
 }
 
-fun maxDistanceToPoints(x1: Float, y1: Float, bounds: Rect): Int {
-    val tl = distance(x1, y1, bounds.left, bounds.top)
-    val tr = distance(x1, y1, bounds.right, bounds.top)
-    val bl = distance(x1, y1, bounds.left, bounds.bottom)
-    val br = distance(x1, y1, bounds.right, bounds.bottom)
-    return Math.max(tl, Math.max(tr, Math.max(bl, br))).toInt()
+fun getOuterRect(textRect: Rect, targetRect: Rect): Rect {
+
+    val topLeftX = min(textRect.topLeft.x, targetRect.topLeft.x)
+    val topLeftY = min(textRect.topLeft.y, targetRect.topLeft.y)
+    val bottomRightX = max(textRect.bottomRight.x, targetRect.bottomRight.x)
+    val bottomRightY = max(textRect.bottomRight.y, targetRect.bottomRight.y)
+
+    val expandedBounds = Rect(topLeftX, topLeftY, bottomRightX, bottomRightY)
+
+    val d = sqrt(
+        expandedBounds.height.toDouble().pow(2.0)
+                + expandedBounds.width.toDouble().pow(2.0)
+    ).toFloat()
+
+    return expandedBounds
 }
 
-fun distance(x1: Float, y1: Float, x2: Float, y2: Float): Double {
-    return Math.sqrt(Math.pow((x2 - x1).toDouble(), 2.0) + Math.pow((y2 - y1).toDouble(), 2.0))
+fun getOuterRadius(textRect: Rect, targetRect: Rect, inGutter: Boolean): Float {
+
+
+    val topLeftX = min(textRect.topLeft.x, targetRect.topLeft.x)
+    val topLeftY = min(textRect.topLeft.y, targetRect.topLeft.y)
+    val bottomRightX = max(textRect.bottomRight.x, targetRect.bottomRight.x)
+    val bottomRightY = max(textRect.bottomRight.y, targetRect.bottomRight.y)
+
+    val expandedBounds = Rect(topLeftX, topLeftY, bottomRightX, bottomRightY)
+
+    if (inGutter) {
+
+    }
+
+    val d = sqrt(
+        expandedBounds.height.toDouble().pow(2.0)
+                + expandedBounds.width.toDouble().pow(2.0)
+    ).toFloat()
+
+    return (d / 2f)
 }
 
 data class TapTargetProperty(

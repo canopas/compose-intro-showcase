@@ -62,7 +62,7 @@ fun TapTargetButton() {
         Button(onClick = {
         }, shape = CircleShape, modifier = Modifier
             .padding(50.dp)
-            .align(Alignment.Center)
+            .align(Alignment.CenterEnd)
             .onGloballyPositioned { coordinates ->
                 targets.add(
                     TapTargetProperty(
