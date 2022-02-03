@@ -15,7 +15,7 @@ repositories {
   
 Add the dependency
 ```
- implementation 'com.github.canopas:JetTapTarget:1.0.1'
+  implementation 'com.github.canopas:IntroShowcase-View:X.X.X'
 ```
 
 ## How to use ?
