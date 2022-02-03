@@ -68,6 +68,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun showcaseSample() {
+    val context = LocalContext.current
+
     val targets = remember {
         mutableStateListOf<ShowcaseProperty>()
     }
@@ -75,7 +77,6 @@ fun showcaseSample() {
         mutableStateOf(false)
     }
 
-    val context = LocalContext.current
     Box {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
