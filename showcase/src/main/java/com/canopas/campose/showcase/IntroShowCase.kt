@@ -1,4 +1,4 @@
-package com.canopas.campose.jettaptarget
+package com.canopas.campose.showcase
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
