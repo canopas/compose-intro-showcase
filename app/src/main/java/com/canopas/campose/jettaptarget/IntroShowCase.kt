@@ -239,7 +239,7 @@ fun getOuterCircleCenter(
     textHeight: Int,
     isInGutter: Boolean,
 ): Offset {
-    var outerCenterX: Float
+    val outerCenterX: Float
     var outerCenterY: Float
 
     val onTop =
@@ -262,7 +262,6 @@ fun getOuterCircleCenter(
     outerCenterX = (left + right) / 2
 
     if (isInGutter) {
-        outerCenterX = (left + right) / 2
         outerCenterY = targetBound.center.y
     }
 
