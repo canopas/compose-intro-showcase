@@ -18,7 +18,7 @@ repositories {
   
 Add the dependency
 ```gradle
-  implementation 'com.github.canopas:Intro-showcase-view:v1.0.1'
+  implementation 'com.github.canopas:Intro-showcase-view:1.0.2'
 ```
 
 ## How to use ?
