@@ -1,8 +1,7 @@
-package com.canopas.campose.jettaptarget
+package com.canopas.campose.showcase
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).

@@ -1,7 +1,6 @@
-package com.canopas.campose.jettaptarget
+package com.canopas.campose.showcase
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,11 +29,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,10 +43,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.canopas.campose.jettaptarget.ui.theme.JetTapTargetTheme
-import com.canopas.campose.jettaptarget.ui.theme.ThemeColor
-import com.canopas.campose.showcase.IntroShowCase
-import com.canopas.campose.showcase.ShowcaseProperty
+import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
+import com.canopas.campose.showcase.ui.theme.ThemeColor
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,14 +65,57 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShowcaseSample() {
-    val context = LocalContext.current
-
     val targets = remember {
         mutableStateMapOf<String, ShowcaseProperty>()
     }
 
-    var isIntroCompleted by remember {
-        mutableStateOf(false)
+    Box {
+        FloatingActionButton(
+            onClick = {},
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomEnd)
+                .onGloballyPositioned { coordinates ->
+                    targets["email"] = ShowcaseProperty(
+                        1, coordinates,
+                        "Check emails", "Click here to check/send emails"
+                    )
+                },
+            backgroundColor = ThemeColor,
+            contentColor = Color.White,
+            elevation = FloatingActionButtonDefaults.elevation(6.dp)
+        ) {
+            Icon(
+                Icons.Filled.Email,
+                contentDescription = "Email"
+            )
+        }
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = 16.dp)
+                .onGloballyPositioned { coordinates ->
+                    targets["follow"] = ShowcaseProperty(
+                        2, coordinates,
+                        "Follow me", "Click here to follow"
+                    )
+                }
+        ) {
+            Text(text = "Follow")
+        }
+
+        IntroShowCase(targets) {
+        }
+    }
+}
+
+@Composable
+fun ShowcaseSample2() {
+    val context = LocalContext.current
+
+    val targets = remember {
+        mutableStateMapOf<String, ShowcaseProperty>()
     }
 
     Box {
@@ -191,17 +228,13 @@ fun ShowcaseSample() {
 
             }
         }
-        Log.e("Total target", "Target ${targets.size}")
-        if (!isIntroCompleted)
-            IntroShowCase(targets) {
-                targets.clear()
-                isIntroCompleted = true
-                Toast.makeText(
-                    context,
-                    "App Intro finished!!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        IntroShowCase(targets) {
+            Toast.makeText(
+                context,
+                "App Intro finished!!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
 }

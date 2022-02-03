@@ -1,4 +1,4 @@
-package com.canopas.campose.jettaptarget.ui.theme
+package com.canopas.campose.showcase.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
