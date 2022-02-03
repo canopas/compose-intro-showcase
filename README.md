@@ -1,7 +1,10 @@
 <img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" />
 
-# JetTapTarget
+# Intro Showcase View
 An android library to highlights different features of the app built using Jetpack Compose.
+
+The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTargetView) that is useful for legacy views.
+
 
 <img src="https://github.com/canopas/JetTapTarget/blob/master/gif/Peek%202022-02-02%2019-38.gif" height="540" />
 
