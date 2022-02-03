@@ -44,16 +44,9 @@ fun showcaseSample() {
                 .onGloballyPositioned { coordinates ->
                     targets.add(
                         ShowcaseProperty(
-                            "email", 1,
-                            coordinates,
-                            "Check emails",
-                            "Click here to check/send emails"
-                        )
-                    )
-                    Log.e("", "Target email ${targets.size}")
-
+                            "email", 1, coordinates, "Check emails", "Click here to check/send emails" )
+                    )     
                 },
-            backgroundColor = Pink,
             contentColor = Color.White,
             elevation = FloatingActionButtonDefaults.elevation(6.dp)
         ) {
@@ -67,11 +60,6 @@ fun showcaseSample() {
             IntroShowCase(targets) {
                 targets.clear()
                 isIntroCompleted = true
-                Toast.makeText(
-                    context,
-                    "App Intro finished!!",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
     }
 }   
