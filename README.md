@@ -18,7 +18,7 @@ repositories {
   
 Add the dependency
 ```
-  implementation 'com.github.canopas:IntroShowcase-View:X.X.X'
+  implementation 'com.github.canopas:Intro-showcase-view:v1.0.1'
 ```
 
 ## How to use ?
