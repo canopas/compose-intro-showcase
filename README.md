@@ -24,29 +24,19 @@ Add the dependency
 ## How to use ?
 ```
 @Composable
-fun showcaseSample() {
-    val context = LocalContext.current
-
+fun ShowcaseSample() {
     val targets = remember {
-        mutableStateListOf<ShowcaseProperty>()
+        mutableStateMapOf<String, ShowcaseProperty>()
     }
-    var isIntroCompleted by remember {
-        mutableStateOf(false)
-    }
-
     Box {
         FloatingActionButton(
-            onClick = {
+            onClick = {},
+            modifier = Modifier.padding(16.dp).align(Alignment.BottomStart).onGloballyPositioned { coordinates ->
+                targets["email"] = ShowcaseProperty(
+                    1, coordinates, "Check emails", "Click here to check/send emails"
+                )
             },
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp)
-                .onGloballyPositioned { coordinates ->
-                    targets.add(
-                        ShowcaseProperty(
-                            "email", 1, coordinates, "Check emails", "Click here to check/send emails" )
-                    )     
-                },
+            backgroundColor = ThemeColor,
             contentColor = Color.White,
             elevation = FloatingActionButtonDefaults.elevation(6.dp)
         ) {
@@ -56,13 +46,12 @@ fun showcaseSample() {
             )
         }
 
-        if (!isIntroCompleted)
-            IntroShowCase(targets) {
-                targets.clear()
-                isIntroCompleted = true
-            }
+        IntroShowCase(targets) {
+            // Show case finished!!
+        }
     }
-}   
+}
+   
 ```
 <img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro2.gif" height="480" />
 
