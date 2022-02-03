@@ -10,19 +10,19 @@ The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTa
 
 ## Configuration
 Add it in your root build.gradle at the end of repositories:
-```
+```gradle
 repositories {
     maven { url 'https://jitpack.io' }
 }
   ```
   
 Add the dependency
-```
+```gradle
   implementation 'com.github.canopas:Intro-showcase-view:v1.0.1'
 ```
 
 ## How to use ?
-```
+```kotlin
 @Composable
 fun ShowcaseSample() {
     val targets = remember {
