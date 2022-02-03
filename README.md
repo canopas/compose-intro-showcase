@@ -8,7 +8,7 @@ The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTa
 
 <img src="https://github.com/canopas/JetTapTarget/blob/master/gif/Peek%202022-02-02%2019-38.gif" height="540" />
 
-## How to add in your project
+## Configuration
 Add it in your root build.gradle at the end of repositories:
 ```
 repositories {
