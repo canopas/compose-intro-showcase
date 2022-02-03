@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    TapTargetButton()
+                    showcaseSample()
                 }
             }
         }
@@ -68,9 +68,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TapTargetButton() {
+fun showcaseSample() {
     val targets = remember {
-        mutableStateListOf<TapTargetProperty>()
+        mutableStateListOf<ShowcaseProperty>()
     }
     var isIntroCompleted by remember {
         mutableStateOf(false)
@@ -89,7 +89,7 @@ fun TapTargetButton() {
                         IconButton(onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
                                 targets.add(
-                                    TapTargetProperty(
+                                    ShowcaseProperty(
                                         "back", 4,
                                         coordinates,
                                         "Go back!!",
@@ -107,7 +107,7 @@ fun TapTargetButton() {
                             onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
                                 targets.add(
-                                    TapTargetProperty(
+                                    ShowcaseProperty(
                                         "search", 3,
                                         coordinates,
                                         "Search anything!!",
@@ -134,7 +134,7 @@ fun TapTargetButton() {
                     },
                     modifier = Modifier.onGloballyPositioned { coordinates ->
                         targets.add(
-                            TapTargetProperty(
+                            ShowcaseProperty(
                                 "email", 1,
                                 coordinates,
                                 "Check emails",
@@ -187,7 +187,7 @@ fun TapTargetButton() {
                             .clip(CircleShape)
                             .onGloballyPositioned { coordinates ->
                                 targets.add(
-                                    TapTargetProperty(
+                                    ShowcaseProperty(
                                         "profile",
                                         0,
                                         coordinates,
@@ -207,7 +207,7 @@ fun TapTargetButton() {
                         .padding(start = 16.dp, bottom = 16.dp)
                         .onGloballyPositioned { coordinates ->
                             targets.add(
-                                TapTargetProperty(
+                                ShowcaseProperty(
                                     "follow", 2,
                                     coordinates,
                                     "Follow me",
@@ -224,7 +224,7 @@ fun TapTargetButton() {
             }
         }
         if (!isIntroCompleted)
-            TapTarget(targets) {
+            IntroShowCase(targets) {
                 targets.clear()
                 isIntroCompleted = true
                 Toast.makeText(
@@ -241,6 +241,5 @@ fun TapTargetButton() {
 @Composable
 fun DefaultPreview() {
     JetTapTargetTheme {
-        TapTargetButton()
     }
 }

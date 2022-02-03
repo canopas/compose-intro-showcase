@@ -44,8 +44,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Composable
-fun TapTarget(
-    targets: MutableList<TapTargetProperty> = mutableListOf(),
+fun IntroShowCase(
+    targets: MutableList<ShowcaseProperty> = mutableListOf(),
     backgroundColor: Color = Color.Black,
     onShowcaseCompleted: () -> Unit
 ) {
@@ -67,7 +67,7 @@ fun TapTarget(
 
 @Composable
 fun TargetContent(
-    target: TapTargetProperty,
+    target: ShowcaseProperty,
     backgroundColor: Color,
     onShowcaseCompleted: () -> Unit
 ) {
@@ -92,11 +92,8 @@ fun TargetContent(
         repeatMode = RepeatMode.Restart,
     )
 
-    var outerXOffset by remember {
-        mutableStateOf(0f)
-    }
-    var outerYOffset by remember {
-        mutableStateOf(0f)
+    var outerOffset by remember {
+        mutableStateOf(Offset(0f, 0f))
     }
 
     var outerRadius by remember {
@@ -109,12 +106,9 @@ fun TargetContent(
         val textHeight = textCoords.size.height
         val isInGutter = topArea > yOffset || yOffset > screenHeight.dp.minus(topArea)
 
-        val outerCircleOffset = getOuterCircleCenter(
+        outerOffset = getOuterCircleCenter(
             targetRect, textRect, targetRadius, textHeight, isInGutter
         )
-
-        outerXOffset = outerCircleOffset.x
-        outerYOffset = outerCircleOffset.y
 
         outerRadius = getOuterRadius(textRect, targetRect) + targetRadius
     }
@@ -164,7 +158,7 @@ fun TargetContent(
 
             drawCircle(
                 color = backgroundColor,
-                center = Offset(x = outerXOffset, y = outerYOffset),
+                center = outerOffset,
                 radius = outerRadius * outerAnimatable.value,
                 alpha = 0.9f
             )
@@ -196,7 +190,7 @@ fun TargetContent(
 
 @Composable
 fun ShowCaseText(
-    currentTarget: TapTargetProperty,
+    currentTarget: ShowcaseProperty,
     boundsInParent: Rect,
     targetRadius: Float,
     onGloballyPositioned: (LayoutCoordinates) -> Unit
@@ -291,7 +285,7 @@ fun getOuterRadius(textRect: Rect, targetRect: Rect): Float {
     return (d / 2f)
 }
 
-data class TapTargetProperty(
+data class ShowcaseProperty(
     val tag: String,
     val index: Int,
     val coordinates: LayoutCoordinates,
