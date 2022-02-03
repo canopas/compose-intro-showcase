@@ -6,7 +6,7 @@ An android library to highlights different features of the app built using Jetpa
 The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTargetView) that is useful for legacy views.
 
 
-<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/Peek%202022-02-02%2019-38.gif" height="540" />
+<img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro1.gif" height="540" />
 
 ## Configuration
 Add it in your root build.gradle at the end of repositories:
@@ -64,7 +64,7 @@ fun showcaseSample() {
     }
 }   
 ```
-<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/Peek%202022-02-03%2010-40.gif" height="540" />
+<img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro2.gif" height="480" />
 
 # Further reading
 For more details, checkout the [tutorial]()
