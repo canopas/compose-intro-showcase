@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    showcaseSample()
+                    ShowcaseSample()
                 }
             }
         }
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun showcaseSample() {
+fun ShowcaseSample() {
     val context = LocalContext.current
 
     val targets = remember {
