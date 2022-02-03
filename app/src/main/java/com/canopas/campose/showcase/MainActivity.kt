@@ -65,53 +65,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShowcaseSample() {
-    val targets = remember {
-        mutableStateMapOf<String, ShowcaseProperty>()
-    }
-
-    Box {
-        FloatingActionButton(
-            onClick = {},
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd)
-                .onGloballyPositioned { coordinates ->
-                    targets["email"] = ShowcaseProperty(
-                        1, coordinates,
-                        "Check emails", "Click here to check/send emails"
-                    )
-                },
-            backgroundColor = ThemeColor,
-            contentColor = Color.White,
-            elevation = FloatingActionButtonDefaults.elevation(6.dp)
-        ) {
-            Icon(
-                Icons.Filled.Email,
-                contentDescription = "Email"
-            )
-        }
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 16.dp)
-                .onGloballyPositioned { coordinates ->
-                    targets["follow"] = ShowcaseProperty(
-                        2, coordinates,
-                        "Follow me", "Click here to follow"
-                    )
-                }
-        ) {
-            Text(text = "Follow")
-        }
-
-        IntroShowCase(targets) {
-        }
-    }
-}
-
-@Composable
-fun ShowcaseSample2() {
     val context = LocalContext.current
 
     val targets = remember {
