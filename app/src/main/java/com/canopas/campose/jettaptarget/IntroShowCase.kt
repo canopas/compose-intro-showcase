@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -45,11 +46,11 @@ import kotlin.math.sqrt
 
 @Composable
 fun IntroShowCase(
-    targets: MutableList<ShowcaseProperty> = mutableListOf(),
+    targets: SnapshotStateMap<String, ShowcaseProperty>,
     backgroundColor: Color = Color.Black,
     onShowcaseCompleted: () -> Unit
 ) {
-    val uniqueTargets = targets.distinctBy { it.tag }.sortedBy { it.index }
+    val uniqueTargets = targets.values.sortedBy { it.index }
     var currentTargetIndex by remember { mutableStateOf(0) }
 
     val currentTarget =
@@ -120,7 +121,7 @@ fun TargetContent(
         remember { Animatable(0f) }
     )
 
-    LaunchedEffect(target.tag) {
+    LaunchedEffect(target) {
         outerAnimatable.snapTo(0.6f)
 
         outerAnimatable.animateTo(
@@ -286,7 +287,6 @@ fun getOuterRadius(textRect: Rect, targetRect: Rect): Float {
 }
 
 data class ShowcaseProperty(
-    val tag: String,
     val index: Int,
     val coordinates: LayoutCoordinates,
     val title: String, val subTitle: String,

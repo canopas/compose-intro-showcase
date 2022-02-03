@@ -1,6 +1,7 @@
 package com.canopas.campose.jettaptarget
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,7 +31,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,8 +72,9 @@ fun ShowcaseSample() {
     val context = LocalContext.current
 
     val targets = remember {
-        mutableStateListOf<ShowcaseProperty>()
+        mutableStateMapOf<String, ShowcaseProperty>()
     }
+
     var isIntroCompleted by remember {
         mutableStateOf(false)
     }
@@ -88,11 +90,9 @@ fun ShowcaseSample() {
                     navigationIcon = {
                         IconButton(onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
-                                targets.add(
-                                    ShowcaseProperty(
-                                        "back", 4, coordinates,
-                                        "Go back!!", "You can go back by clicking here."
-                                    )
+                                targets["back"] = ShowcaseProperty(
+                                    4, coordinates,
+                                    "Go back!!", "You can go back by clicking here."
                                 )
                             }) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Search")
@@ -102,14 +102,9 @@ fun ShowcaseSample() {
                         IconButton(
                             onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
-                                targets.add(
-                                    ShowcaseProperty(
-                                        "search",
-                                        3,
-                                        coordinates,
-                                        "Search anything!!",
-                                        "You can search anything by clicking here."
-                                    )
+                                targets["search"] = ShowcaseProperty(
+                                    3, coordinates,
+                                    "Search anything!!", "You can search anything by clicking here."
                                 )
                             },
                         ) {
@@ -122,11 +117,9 @@ fun ShowcaseSample() {
                 FloatingActionButton(
                     onClick = {},
                     modifier = Modifier.onGloballyPositioned { coordinates ->
-                        targets.add(
-                            ShowcaseProperty(
-                                "email", 1, coordinates,
-                                "Check emails", "Click here to check/send emails"
-                            )
+                        targets["email"] = ShowcaseProperty(
+                            1, coordinates,
+                            "Check emails", "Click here to check/send emails"
                         )
                     },
                     backgroundColor = ThemeColor,
@@ -171,11 +164,9 @@ fun ShowcaseSample() {
                             .align(Alignment.TopCenter)
                             .clip(CircleShape)
                             .onGloballyPositioned { coordinates ->
-                                targets.add(
-                                    ShowcaseProperty(
-                                        "profile", 0, coordinates,
-                                        "User profile", "Click here to update your profile"
-                                    )
+                                targets["profile"] = ShowcaseProperty(
+                                    0, coordinates,
+                                    "User profile", "Click here to update your profile"
                                 )
                             }
                     )
@@ -187,20 +178,18 @@ fun ShowcaseSample() {
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, bottom = 16.dp)
                         .onGloballyPositioned { coordinates ->
-                            targets.add(
-                                ShowcaseProperty(
-                                    "follow", 2, coordinates,
-                                    "Follow me", "Click here to follow"
-                                )
+                            targets["follow"] = ShowcaseProperty(
+                                2, coordinates,
+                                "Follow me", "Click here to follow"
                             )
                         }
-
                 ) {
                     Text(text = "Follow")
                 }
 
             }
         }
+        Log.e("Total target", "Target ${targets.size}")
         if (!isIntroCompleted)
             IntroShowCase(targets) {
                 targets.clear()
