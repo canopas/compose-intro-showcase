@@ -1,4 +1,4 @@
-<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" height="540" />
+<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" />
 
 # JetTapTarget
 An android library to highlights different features of the app built using Jetpack Compose.
