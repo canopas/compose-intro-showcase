@@ -1,11 +1,14 @@
-<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" height="540" />
+<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" />
 
-# JetTapTarget
+# Intro Showcase View
 An android library to highlights different features of the app built using Jetpack Compose.
+
+The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTargetView) that is useful for legacy views.
+
 
 <img src="https://github.com/canopas/JetTapTarget/blob/master/gif/Peek%202022-02-02%2019-38.gif" height="540" />
 
-## How to add in your project
+## Configuration
 Add it in your root build.gradle at the end of repositories:
 ```
 repositories {
@@ -15,7 +18,7 @@ repositories {
   
 Add the dependency
 ```
- implementation 'com.github.canopas:JetTapTarget:1.0.1'
+  implementation 'com.github.canopas:IntroShowcase-View:X.X.X'
 ```
 
 ## How to use ?
@@ -41,16 +44,9 @@ fun showcaseSample() {
                 .onGloballyPositioned { coordinates ->
                     targets.add(
                         ShowcaseProperty(
-                            "email", 1,
-                            coordinates,
-                            "Check emails",
-                            "Click here to check/send emails"
-                        )
-                    )
-                    Log.e("", "Target email ${targets.size}")
-
+                            "email", 1, coordinates, "Check emails", "Click here to check/send emails" )
+                    )     
                 },
-            backgroundColor = Pink,
             contentColor = Color.White,
             elevation = FloatingActionButtonDefaults.elevation(6.dp)
         ) {
@@ -64,11 +60,6 @@ fun showcaseSample() {
             IntroShowCase(targets) {
                 targets.clear()
                 isIntroCompleted = true
-                Toast.makeText(
-                    context,
-                    "App Intro finished!!",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
     }
 }   
@@ -88,7 +79,7 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 # Licence
 
 ```
-Copyright 2022 Radika Saliya
+Copyright 2022 Canopas Software LLP
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
