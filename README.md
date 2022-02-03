@@ -64,7 +64,7 @@ fun showcaseSample() {
     }
 }   
 ```
-<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/Peek%202022-02-03%2010-40.gif" height="540" />
+<img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro-ex-1.gif" height="480" />
 
 # Further reading
 For more details, checkout the [tutorial]()
