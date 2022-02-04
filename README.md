@@ -47,7 +47,7 @@ fun ShowcaseSample() {
         }
 
         IntroShowCase(targets) {
-            // Show case finished!!
+            // Showcase finished!!
         }
     }
 }
