@@ -57,8 +57,11 @@ fun ShowcaseSample() {
 ```
 <img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro2.gif" height="480" />
 
+# Demo
+[Sample](https://github.com/canopas/Intro-showcase-view/tree/master/app) app demonstrates how simple the usage of the library actually is.
+
 # Further reading
-For more details, checkout the [tutorial](https://blog.canopas.com/intro-showcase-view-in-jetpack-compose-ac044cd3bf28)
+For more details about the library implementation, checkout the [Article](https://blog.canopas.com/intro-showcase-view-in-jetpack-compose-ac044cd3bf28)
 
 # Bugs and Feedback
 For bugs, questions and discussions please use the [Github Issues](https://github.com/canopas/JetTapTarget/issues).
