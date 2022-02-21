@@ -1,5 +1,5 @@
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-Intro--showcase--view-green.svg?style=flat )]( https://android-arsenal.com/details/1/8387 )
-
+<img alt="Badge" height="20px" src="https://androidweekly.net/issues/issue-506/badge">
 <img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" />
 
 # Intro Showcase View
