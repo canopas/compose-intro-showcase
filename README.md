@@ -16,16 +16,13 @@ The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTa
 <img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro1.gif" height="540" />
 
 ## Configuration
-Add it in your root build.gradle at the end of repositories:
-```gradle
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-  ```
-  
+
+Available on [Maven Central](https://search.maven.org/artifact/com.canopas.intro-showcase-view/introshowcaseview).
+
 Add the dependency
 ```gradle
-  implementation 'com.github.canopas:Intro-showcase-view:1.0.2'
+    implementation 'com.canopas.intro-showcase-view:introshowcaseview:1.0.3'
+
 ```
 
 ## How to use ?
