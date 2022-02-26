@@ -1,4 +1,4 @@
-package com.canopas.campose.showcase
+package com.canopas.lib.showcase
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
