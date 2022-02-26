@@ -1,4 +1,4 @@
-package com.canopas.campose.showcase
+package com.canopas.lib.showcase
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
