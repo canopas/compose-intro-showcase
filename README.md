@@ -3,11 +3,6 @@
 <img alt="Badge" height="20px" src="https://androidweekly.net/issues/issue-506/badge">
 
 
-<img src="https://github.com/canopas/JetTapTarget/blob/master/gif/4-%20intro%20showcase.jpg" />
-
-
-
-
 An android library to highlight different features of the app built using Jetpack Compose.
 
 The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTargetView) that is useful for legacy views.
