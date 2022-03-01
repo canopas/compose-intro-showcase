@@ -32,26 +32,47 @@ fun ShowcaseSample() {
     val targets = remember {
         mutableStateMapOf<String, ShowcaseProperty>()
     }
-    Box {
-        FloatingActionButton(
-            onClick = {},
-            modifier = Modifier.padding(16.dp).align(Alignment.BottomStart).onGloballyPositioned { coordinates ->
-                targets["email"] = ShowcaseProperty(
-                    1, coordinates, "Check emails", "Click here to check/send emails"
-                )
-            },
-            backgroundColor = ThemeColor,
-            contentColor = Color.White,
-            elevation = FloatingActionButtonDefaults.elevation(6.dp)
-        ) {
-            Icon(
-                Icons.Filled.Email,
-                contentDescription = "Email"
-            )
-        }
+    var showAppIntro by remember {
+        mutableStateOf(true)
+    }
 
-        IntroShowCase(targets) {
-            // Showcase finished!!
+    Box {
+        Image(
+            painter = painterResource(id = R.drawable.ic_unknown_profile),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .clip(CircleShape)
+                .onGloballyPositioned { coordinates ->
+                    targets["profile"] = ShowcaseProperty(
+                        0, // specify index to show feature in order
+                        coordinates, // specify coordinates of target
+                        "User profile", // specify text to show as title
+                        "Click here to update your profile", // specify text to show as description
+                        // ShowcaseStyle is optional
+                        style = ShowcaseStyle.Default.copy(
+                            titleStyle = TextStyle(
+                                color = Color.Black,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            ), // specify the style for title
+                            descriptionStyle = TextStyle(
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            ), // specify style for description
+                            backgroundColor = Color(0xFFFFCC80), // specify color of background
+                            backgroundAlpha = 0.98f, // specify transparency of background
+                            targetCircleColor = Color.White // specify color of target circle
+                        )
+                    )
+                }
+        )
+
+        if (showAppIntro) {
+            IntroShowCase(targets) {
+                //App Intro finished!!
+                showAppIntro = false
+            }
         }
     }
 }

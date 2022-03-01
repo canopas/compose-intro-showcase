@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,7 +49,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun IntroShowCase(
     targets: SnapshotStateMap<String, ShowcaseProperty>,
-    backgroundColor: Color = Color.Black,
     onShowcaseCompleted: () -> Unit
 ) {
     val uniqueTargets = targets.values.sortedBy { it.index }
@@ -58,7 +59,7 @@ fun IntroShowCase(
 
 
     currentTarget?.let {
-        TargetContent(it, backgroundColor) {
+        TargetContent(it) {
             if (++currentTargetIndex >= uniqueTargets.size) {
                 onShowcaseCompleted()
             }
@@ -69,7 +70,6 @@ fun IntroShowCase(
 @Composable
 fun TargetContent(
     target: ShowcaseProperty,
-    backgroundColor: Color,
     onShowcaseCompleted: () -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -158,15 +158,15 @@ fun TargetContent(
         ) {
 
             drawCircle(
-                color = backgroundColor,
+                color = target.style.backgroundColor,
                 center = outerOffset,
                 radius = outerRadius * outerAnimatable.value,
-                alpha = 0.9f
+                alpha = target.style.backgroundAlpha
             )
 
             dys.forEach { dy ->
                 drawCircle(
-                    color = Color.White,
+                    color = target.style.targetCircleColor,
                     radius = maxDimension * dy * 2f,
                     center = targetRect.center,
                     alpha = 1 - dy
@@ -174,10 +174,10 @@ fun TargetContent(
             }
 
             drawCircle(
-                color = Color.Transparent,
+                color = target.style.targetCircleColor,
                 radius = targetRadius,
                 center = targetRect.center,
-                blendMode = BlendMode.Clear
+                blendMode = BlendMode.Xor
             )
 
         }
@@ -223,13 +223,13 @@ fun ShowCaseText(
     {
         Text(
             text = currentTarget.title,
-            fontSize = 24.sp,
-            color = currentTarget.subTitleColor,
-            fontWeight = FontWeight.Bold
+            style = currentTarget.style.titleStyle
         )
-        Text(text = currentTarget.subTitle, fontSize = 16.sp, color = currentTarget.subTitleColor)
+        Text(
+            text = currentTarget.description,
+            style = currentTarget.style.descriptionStyle
+        )
     }
-
 }
 
 fun getOuterCircleCenter(
@@ -285,9 +285,57 @@ fun getOuterRadius(textRect: Rect, targetRect: Rect): Float {
     return (d / 2f)
 }
 
+
 data class ShowcaseProperty(
     val index: Int,
     val coordinates: LayoutCoordinates,
-    val title: String, val subTitle: String,
-    val titleColor: Color = Color.White, val subTitleColor: Color = Color.White,
+    val title: String, val description: String,
+    val style: ShowcaseStyle = ShowcaseStyle.Default
 )
+
+class ShowcaseStyle(
+    val titleStyle: TextStyle = DEFAULT_TITLE_STYLE,
+    val descriptionStyle: TextStyle = DEFAULT_DESCRIPTION_STYLE,
+    val backgroundColor: Color = Color.Black,
+    /*@FloatRange(from = 0.0, to = 1.0)*/
+    val backgroundAlpha: Float = DEFAULT_BACKGROUND_RADIUS,
+    val targetCircleColor: Color = Color.White
+) {
+
+    fun copy(
+        titleStyle: TextStyle = this.titleStyle,
+        descriptionStyle: TextStyle = this.descriptionStyle,
+        backgroundColor: Color = this.backgroundColor,
+        /*@FloatRange(from = 0.0, to = 1.0)*/
+        backgroundAlpha: Float = this.backgroundAlpha,
+        targetCircleColor: Color = this.targetCircleColor
+    ): ShowcaseStyle {
+
+        return ShowcaseStyle(
+            titleStyle = titleStyle,
+            descriptionStyle = descriptionStyle,
+            backgroundColor = backgroundColor,
+            backgroundAlpha = backgroundAlpha,
+            targetCircleColor = targetCircleColor
+        )
+    }
+
+    companion object {
+        private const val DEFAULT_BACKGROUND_RADIUS = 0.9f
+        private val DEFAULT_TITLE_STYLE = TextStyle.Default.copy(
+            color = Color.White,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        private val DEFAULT_DESCRIPTION_STYLE = TextStyle.Default.copy(
+            color = Color.White,
+            fontSize = 16.sp
+        )
+
+        /**
+         * Constant for default text style.
+         */
+        @Stable
+        val Default = ShowcaseStyle()
+    }
+}
