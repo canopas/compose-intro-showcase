@@ -48,7 +48,6 @@ fun ShowcaseSample() {
 }
    
 ```
-<img src="https://github.com/canopas/Intro-showcase-view/blob/master/gif/intro2.gif" height="480" />
 
 # Demo
 [Sample](https://github.com/canopas/Intro-showcase-view/tree/master/app) app demonstrates how simple the usage of the library actually is.
