@@ -1,7 +1,6 @@
 package com.canopas.campose.showcase
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -29,8 +28,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,15 +40,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
 import com.canopas.lib.showcase.IntroShowCase
 import com.canopas.lib.showcase.ShowcaseProperty
+import com.canopas.lib.showcase.ShowcaseStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +74,9 @@ fun ShowcaseSample() {
 
     val targets = remember {
         mutableStateMapOf<String, ShowcaseProperty>()
+    }
+    var showAppIntro by remember {
+        mutableStateOf(true)
     }
 
     Box {
@@ -159,8 +165,25 @@ fun ShowcaseSample() {
                             .clip(CircleShape)
                             .onGloballyPositioned { coordinates ->
                                 targets["profile"] = ShowcaseProperty(
-                                    0, coordinates,
-                                    "User profile", "Click here to update your profile"
+                                    0, // specify index to show feature in order
+                                    coordinates, // specify coordinates of target
+                                    "User profile", // specify text to show as title
+                                    "Click here to update your profile", // specify text to show as description
+                                    // ShowcaseStyle is optional
+                                    style = ShowcaseStyle.Default.copy(
+                                        titleStyle = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ), // specify style for title
+                                        descriptionStyle = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 16.sp
+                                        ), // specify style for description
+                                        backgroundColor = Color(0xFFFFCC80), // specify color of background
+                                        backgroundAlpha = 0.98f, // specify transparency of background
+                                        targetCircleColor = Color.White // specify color of target circle
+                                    )
                                 )
                             }
                     )
@@ -183,20 +206,12 @@ fun ShowcaseSample() {
 
             }
         }
-        IntroShowCase(targets) {
-            Toast.makeText(
-                context,
-                "App Intro finished!!",
-                Toast.LENGTH_SHORT
-            ).show()
+
+        if (showAppIntro) {
+            IntroShowCase(targets) {
+                //App Intro finished!!
+                showAppIntro = false
+            }
         }
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    JetTapTargetTheme {
     }
 }
