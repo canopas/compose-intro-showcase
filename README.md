@@ -9,7 +9,7 @@ An android library to highlight different features of the app built using Jetpac
 
 The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTargetView) that is useful for legacy views.
 
-<img src="https://github.com/canopas/Intro-showcase-view/blob/master/docs/assets/intro1.gif" height="540" />
+<img src="https://github.com/canopas/Intro-showcase-view/blob/master/docs/assets/main_intro.gif" height="540" />
 
 ## Configuration
 
