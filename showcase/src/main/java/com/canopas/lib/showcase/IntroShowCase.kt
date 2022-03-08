@@ -9,11 +9,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -30,15 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
@@ -48,7 +45,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun IntroShowCase(
-    targets: SnapshotStateMap<String, ShowcaseProperty>,
+    targets: SnapshotStateMap<String, IntroShowcaseTargets>,
     onShowcaseCompleted: () -> Unit
 ) {
     val uniqueTargets = targets.values.sortedBy { it.index }
@@ -69,16 +66,13 @@ fun IntroShowCase(
 
 @Composable
 fun TargetContent(
-    target: ShowcaseProperty,
+    target: IntroShowcaseTargets,
     onShowcaseCompleted: () -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val targetCords = target.coordinates
-    val topArea = 88.dp
+    val gutterArea = 88.dp
     val targetRect = targetCords.boundsInRoot()
-    var textCoordinate: LayoutCoordinates? by remember {
-        mutableStateOf(null)
-    }
 
     val yOffset = with(LocalDensity.current) {
         targetCords.positionInRoot().y.toDp()
@@ -99,19 +93,6 @@ fun TargetContent(
 
     var outerRadius by remember {
         mutableStateOf(0f)
-    }
-
-    textCoordinate?.let { textCoords ->
-        val textRect = textCoords.boundsInRoot()
-
-        val textHeight = textCoords.size.height
-        val isInGutter = topArea > yOffset || yOffset > screenHeight.dp.minus(topArea)
-
-        outerOffset = getOuterCircleCenter(
-            targetRect, textRect, targetRadius, textHeight, isInGutter
-        )
-
-        outerRadius = getOuterRadius(textRect, targetRect) + targetRadius
     }
 
     val outerAnimatable = remember { Animatable(0.6f) }
@@ -180,10 +161,24 @@ fun TargetContent(
                 blendMode = BlendMode.Xor
             )
 
+            //drawRect(Color.Cyan.copy(alpha = 0.3f), topLeft = rect.topLeft, size = rect.size)
+            // drawCircle(Color.Yellow.copy(alpha = 0.3f), radius = outerRadius, center = rect.center)
         }
 
-        ShowCaseText(target, targetRect, targetRadius) {
-            textCoordinate = it
+        ShowCaseText(target, targetRect, targetRadius) { textCoords ->
+            val contentRect = textCoords.boundsInParent()
+
+            val isInGutter = gutterArea > yOffset || yOffset > screenHeight.dp.minus(gutterArea)
+
+            val outerRect = getOuterRect(contentRect, targetRect)
+
+            outerOffset = if (isInGutter) {
+                outerRect.center
+            } else {
+                getOuterCircleCenter(targetRect, contentRect, targetRadius)
+            }
+
+            outerRadius = getOuterRadius(outerRect) + targetRadius
         }
     }
 }
@@ -191,111 +186,98 @@ fun TargetContent(
 
 @Composable
 fun ShowCaseText(
-    currentTarget: ShowcaseProperty,
+    currentTarget: IntroShowcaseTargets,
     boundsInParent: Rect,
     targetRadius: Float,
-    onGloballyPositioned: (LayoutCoordinates) -> Unit
+    updateContentCoordinates: (LayoutCoordinates) -> Unit
 ) {
 
-    var txtOffsetY by remember {
+    var contentOffsetY by remember {
         mutableStateOf(0f)
     }
 
-    Column(modifier = Modifier
-        .offset(y = with(LocalDensity.current) {
-            txtOffsetY.toDp()
-        })
-        .onGloballyPositioned {
-            onGloballyPositioned(it)
-            val textHeight = it.size.height
+    Box(
+        content = currentTarget.content,
+        modifier = Modifier
+            .offset(y = with(LocalDensity.current) {
+                contentOffsetY.toDp()
+            })
+            .onGloballyPositioned {
+                updateContentCoordinates(it)
+                val contentHeight = it.size.height
 
-            val possibleTop =
-                boundsInParent.center.y - targetRadius - textHeight
+                val possibleTop =
+                    boundsInParent.center.y - targetRadius - contentHeight
 
-            txtOffsetY = if (possibleTop > 0) {
-                possibleTop
-            } else {
-                boundsInParent.center.y + targetRadius
+                contentOffsetY = if (possibleTop > 0) {
+                    possibleTop
+                } else {
+                    boundsInParent.center.y + targetRadius
+                }
             }
-        }
-        .padding(16.dp)
+            .padding(16.dp)
     )
-    {
-        Text(
-            text = currentTarget.title,
-            style = currentTarget.style.titleStyle
-        )
-        Text(
-            text = currentTarget.description,
-            style = currentTarget.style.descriptionStyle
-        )
-    }
+
 }
 
 fun getOuterCircleCenter(
-    targetBound: Rect,
-    textBound: Rect,
-    targetRadius: Float,
-    textHeight: Int,
-    isInGutter: Boolean,
+    targetRect: Rect,
+    contentRect: Rect,
+    targetRadius: Float
 ): Offset {
     val outerCenterX: Float
-    var outerCenterY: Float
+    val outerCenterY: Float
 
+    val contentHeight = contentRect.height
     val onTop =
-        targetBound.center.y - targetRadius - textHeight > 0
+        targetRect.center.y - targetRadius - contentHeight > 0
 
     val left = min(
-        textBound.left,
-        targetBound.left - targetRadius
+        contentRect.left,
+        targetRect.left - targetRadius
     )
     val right = max(
-        textBound.right,
-        targetBound.right + targetRadius
+        contentRect.right,
+        targetRect.right + targetRadius
     )
 
     val centerY =
-        if (onTop) targetBound.center.y - targetRadius - textHeight
-        else targetBound.center.y + targetRadius + textHeight
+        if (onTop) targetRect.center.y - targetRadius - contentHeight
+        else targetRect.center.y + targetRadius + contentHeight
 
     outerCenterY = centerY
     outerCenterX = (left + right) / 2
 
-    if (isInGutter) {
-        outerCenterY = targetBound.center.y
-    }
-
     return Offset(outerCenterX, outerCenterY)
 }
 
-fun getOuterRadius(textRect: Rect, targetRect: Rect): Float {
+fun getOuterRect(textRect: Rect, targetRect: Rect): Rect {
 
     val topLeftX = min(textRect.topLeft.x, targetRect.topLeft.x)
     val topLeftY = min(textRect.topLeft.y, targetRect.topLeft.y)
     val bottomRightX = max(textRect.bottomRight.x, targetRect.bottomRight.x)
     val bottomRightY = max(textRect.bottomRight.y, targetRect.bottomRight.y)
 
-    val expandedBounds = Rect(topLeftX, topLeftY, bottomRightX, bottomRightY)
+    return Rect(topLeftX, topLeftY, bottomRightX, bottomRightY)
+}
 
+fun getOuterRadius(outerRect: Rect): Float {
     val d = sqrt(
-        expandedBounds.height.toDouble().pow(2.0)
-                + expandedBounds.width.toDouble().pow(2.0)
+        outerRect.height.toDouble().pow(2.0)
+                + outerRect.width.toDouble().pow(2.0)
     ).toFloat()
 
     return (d / 2f)
 }
 
-
-data class ShowcaseProperty(
+data class IntroShowcaseTargets(
     val index: Int,
     val coordinates: LayoutCoordinates,
-    val title: String, val description: String,
-    val style: ShowcaseStyle = ShowcaseStyle.Default
+    val style: ShowcaseStyle = ShowcaseStyle.Default,
+    val content: @Composable BoxScope.() -> Unit
 )
 
 class ShowcaseStyle(
-    val titleStyle: TextStyle = DEFAULT_TITLE_STYLE,
-    val descriptionStyle: TextStyle = DEFAULT_DESCRIPTION_STYLE,
     val backgroundColor: Color = Color.Black,
     /*@FloatRange(from = 0.0, to = 1.0)*/
     val backgroundAlpha: Float = DEFAULT_BACKGROUND_RADIUS,
@@ -303,8 +285,6 @@ class ShowcaseStyle(
 ) {
 
     fun copy(
-        titleStyle: TextStyle = this.titleStyle,
-        descriptionStyle: TextStyle = this.descriptionStyle,
         backgroundColor: Color = this.backgroundColor,
         /*@FloatRange(from = 0.0, to = 1.0)*/
         backgroundAlpha: Float = this.backgroundAlpha,
@@ -312,8 +292,6 @@ class ShowcaseStyle(
     ): ShowcaseStyle {
 
         return ShowcaseStyle(
-            titleStyle = titleStyle,
-            descriptionStyle = descriptionStyle,
             backgroundColor = backgroundColor,
             backgroundAlpha = backgroundAlpha,
             targetCircleColor = targetCircleColor
@@ -322,15 +300,6 @@ class ShowcaseStyle(
 
     companion object {
         private const val DEFAULT_BACKGROUND_RADIUS = 0.9f
-        private val DEFAULT_TITLE_STYLE = TextStyle.Default.copy(
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-        private val DEFAULT_DESCRIPTION_STYLE = TextStyle.Default.copy(
-            color = Color.White,
-            fontSize = 16.sp
-        )
 
         /**
          * Constant for default text style.

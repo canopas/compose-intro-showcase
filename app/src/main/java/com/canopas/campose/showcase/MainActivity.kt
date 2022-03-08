@@ -7,11 +7,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.FloatingActionButton
@@ -40,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ import androidx.compose.ui.unit.sp
 import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
 import com.canopas.lib.showcase.IntroShowCase
-import com.canopas.lib.showcase.ShowcaseProperty
+import com.canopas.lib.showcase.IntroShowcaseTargets
 import com.canopas.lib.showcase.ShowcaseStyle
 
 class MainActivity : ComponentActivity() {
@@ -73,7 +74,7 @@ fun ShowcaseSample() {
     val context = LocalContext.current
 
     val targets = remember {
-        mutableStateMapOf<String, ShowcaseProperty>()
+        mutableStateMapOf<String, IntroShowcaseTargets>()
     }
     var showAppIntro by remember {
         mutableStateOf(true)
@@ -90,9 +91,29 @@ fun ShowcaseSample() {
                     navigationIcon = {
                         IconButton(onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
-                                targets["back"] = ShowcaseProperty(
+                                targets["back"] = IntroShowcaseTargets(
                                     4, coordinates,
-                                    "Go back!!", "You can go back by clicking here."
+                                    content = {
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Image(
+                                                painterResource(id = R.drawable.search_example),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(100.dp)
+                                            )
+
+                                            Text(
+                                                text = "Go back!!",
+                                                color = Color.White,
+                                                fontSize = 24.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "You can go back by clicking here.",
+                                                color = Color.White,
+                                                fontSize = 16.sp
+                                            )
+                                        }
+                                    }
                                 )
                             }) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Search")
@@ -102,9 +123,29 @@ fun ShowcaseSample() {
                         IconButton(
                             onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
-                                targets["search"] = ShowcaseProperty(
+                                targets["search"] = IntroShowcaseTargets(
                                     3, coordinates,
-                                    "Search anything!!", "You can search anything by clicking here."
+                                    content = {
+                                        Column {
+                                            Image(
+                                                painterResource(id = R.drawable.search_example),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(100.dp)
+                                            )
+
+                                            Text(
+                                                text = "Search anything!!",
+                                                color = Color.White,
+                                                fontSize = 24.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "You can search anything by clicking here.",
+                                                color = Color.White,
+                                                fontSize = 16.sp
+                                            )
+                                        }
+                                    }
                                 )
                             },
                         ) {
@@ -117,9 +158,39 @@ fun ShowcaseSample() {
                 FloatingActionButton(
                     onClick = {},
                     modifier = Modifier.onGloballyPositioned { coordinates ->
-                        targets["email"] = ShowcaseProperty(
+                        targets["email"] = IntroShowcaseTargets(
                             1, coordinates,
-                            "Check emails", "Click here to check/send emails"
+                            style = ShowcaseStyle.Default.copy(
+                                backgroundColor = Color(0xFF1C0A00), // specify color of background
+                                backgroundAlpha = 0.98f, // specify transparency of background
+                                targetCircleColor = Color.White // specify color of target circle
+                            ),
+                            // specify the content to show to introduce app feature
+                            content = {
+                                Column {
+                                    Text(
+                                        text = "Check emails",
+                                        color = Color.White,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "Click here to check/send emails",
+                                        color = Color.White,
+                                        fontSize = 16.sp
+                                    )
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Icon(
+                                        painterResource(id = R.drawable.right_arrow),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .align(Alignment.End),
+                                        tint = Color.White
+                                    )
+                                }
+
+                            }
                         )
                     },
                     backgroundColor = ThemeColor,
@@ -164,26 +235,31 @@ fun ShowcaseSample() {
                             .align(Alignment.TopCenter)
                             .clip(CircleShape)
                             .onGloballyPositioned { coordinates ->
-                                targets["profile"] = ShowcaseProperty(
+                                targets["profile"] = IntroShowcaseTargets(
                                     0, // specify index to show feature in order
                                     coordinates, // specify coordinates of target
-                                    "User profile", // specify text to show as title
-                                    "Click here to update your profile", // specify text to show as description
                                     // ShowcaseStyle is optional
                                     style = ShowcaseStyle.Default.copy(
-                                        titleStyle = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold
-                                        ), // specify style for title
-                                        descriptionStyle = TextStyle(
-                                            color = Color.Black,
-                                            fontSize = 16.sp
-                                        ), // specify style for description
+                                        // specify style for description
                                         backgroundColor = Color(0xFFFFCC80), // specify color of background
                                         backgroundAlpha = 0.98f, // specify transparency of background
                                         targetCircleColor = Color.White // specify color of target circle
-                                    )
+                                    ),
+                                    content = {
+                                        Column {
+                                            Text(
+                                                text = "User profile",
+                                                color = Color.White,
+                                                fontSize = 24.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "Click here to update your profile",
+                                                color = Color.White,
+                                                fontSize = 16.sp
+                                            )
+                                        }
+                                    }
                                 )
                             }
                     )
@@ -195,10 +271,10 @@ fun ShowcaseSample() {
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, bottom = 16.dp)
                         .onGloballyPositioned { coordinates ->
-                            targets["follow"] = ShowcaseProperty(
-                                2, coordinates,
-                                "Follow me", "Click here to follow"
-                            )
+//                            targets["follow"] = ShowcaseProperty(
+//                                2, coordinates,
+//                                "Follow me", "Click here to follow"
+//                            )
                         }
                 ) {
                     Text(text = "Follow")
