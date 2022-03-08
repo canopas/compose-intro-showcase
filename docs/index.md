@@ -11,7 +11,7 @@ An android library to highlight different features of the app built using Jetpac
 The library is inspired by the [TapTargetView](https://github.com/KeepSafe/TapTargetView) that is useful for legacy views.
 
 
-<img src="assets/intro1.gif" height="540" />
+<img src="assets/main_intro.gif" height="540" />
 
 ## Configuration
 
@@ -27,56 +27,74 @@ Add the dependency
 ```kotlin
 @Composable
 fun ShowcaseSample() {
-    val targets = remember {
-        mutableStateMapOf<String, ShowcaseProperty>()
-    }
-    var showAppIntro by remember {
-        mutableStateOf(true)
-    }
+  val targets = remember {
+          mutableStateMapOf<String, IntroShowcaseTargets>()
+      }
+      var showAppIntro by remember {
+          mutableStateOf(true)
+      }
 
-    Box {
-        Image(
-            painter = painterResource(id = R.drawable.ic_unknown_profile),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .clip(CircleShape)
-                .onGloballyPositioned { coordinates ->
-                    targets["profile"] = ShowcaseProperty(
-                        0, // specify index to show feature in order
-                        coordinates, // specify coordinates of target
-                        "User profile", // specify text to show as title
-                        "Click here to update your profile", // specify text to show as description
-                        // ShowcaseStyle is optional
-                        style = ShowcaseStyle.Default.copy(
-                            titleStyle = TextStyle(
-                                color = Color.Black,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            ), // specify the style for title
-                            descriptionStyle = TextStyle(
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            ), // specify style for description
-                            backgroundColor = Color(0xFFFFCC80), // specify color of background
-                            backgroundAlpha = 0.98f, // specify transparency of background
-                            targetCircleColor = Color.White // specify color of target circle
-                        )
-                    )
-                }
-        )
+      Box {
+          FloatingActionButton(
+              onClick = {},
+              modifier = Modifier.onGloballyPositioned { coordinates ->
+                  targets["email"] = IntroShowcaseTargets(
+                      1, coordinates,
+                      style = ShowcaseStyle.Default.copy(
+                          backgroundColor = Color(0xFF1C0A00), // specify color of background
+                          backgroundAlpha = 0.98f, // specify transparency of background
+                          targetCircleColor = Color.White // specify color of target circle
+                      ),
+                      // specify the content to show to introduce app feature
+                      content = {
+                          Column {
+                              Text(
+                                  text = "Check emails",
+                                  color = Color.White,
+                                  fontSize = 24.sp,
+                                  fontWeight = FontWeight.Bold
+                              )
+                              Text(
+                                  text = "Click here to check/send emails",
+                                  color = Color.White,
+                                  fontSize = 16.sp
+                              )
+                              Spacer(modifier = Modifier.height(10.dp))
+                              Icon(
+                                  painterResource(id = R.drawable.right_arrow),
+                                  contentDescription = null,
+                                  modifier = Modifier
+                                      .size(80.dp)
+                                      .align(Alignment.End),
+                                  tint = Color.White
+                              )
+                          }
 
-        if (showAppIntro) {
-            IntroShowCase(targets) {
-                //App Intro finished!!
-                showAppIntro = false
-            }
-        }
-    }
+                      }
+                  )
+              },
+              backgroundColor = ThemeColor,
+              contentColor = Color.White,
+              elevation = FloatingActionButtonDefaults.elevation(6.dp)
+          ) {
+              Icon(
+                  Icons.Filled.Email,
+                  contentDescription = "Email"
+              )
+          }
+
+          if (showAppIntro) {
+              IntroShowCase(targets) {
+                  //App Intro finished!!
+                  showAppIntro = false
+              }
+          }
+      }
 }
 
 ```
 <img src="assets/intro2.gif" height="480" />
+<img src="assets/intro3.gif" height="480" />
 
 # Demo
 [Sample](https://github.com/canopas/Intro-showcase-view/tree/master/app) app demonstrates how simple the usage of the library actually is.
