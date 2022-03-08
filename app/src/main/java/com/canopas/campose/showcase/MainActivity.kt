@@ -240,13 +240,17 @@ fun ShowcaseSample() {
                                     coordinates, // specify coordinates of target
                                     // ShowcaseStyle is optional
                                     style = ShowcaseStyle.Default.copy(
-                                        // specify style for description
                                         backgroundColor = Color(0xFFFFCC80), // specify color of background
                                         backgroundAlpha = 0.98f, // specify transparency of background
                                         targetCircleColor = Color.White // specify color of target circle
                                     ),
                                     content = {
-                                        Column {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 20.dp)
+                                        ) {
                                             Text(
                                                 text = "User profile",
                                                 color = Color.White,
@@ -271,10 +275,26 @@ fun ShowcaseSample() {
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, bottom = 16.dp)
                         .onGloballyPositioned { coordinates ->
-//                            targets["follow"] = ShowcaseProperty(
-//                                2, coordinates,
-//                                "Follow me", "Click here to follow"
-//                            )
+
+                            targets["follow"] = IntroShowcaseTargets(
+                                2, coordinates,
+                                content = {
+                                    Column {
+                                        Text(
+                                            text = "Follow me",
+                                            color = Color.White,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = "Click here to follow",
+                                            color = Color.White,
+                                            fontSize = 16.sp
+                                        )
+                                    }
+
+                                }
+                            )
                         }
                 ) {
                     Text(text = "Follow")

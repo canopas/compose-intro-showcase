@@ -78,6 +78,8 @@ fun TargetContent(
         targetCords.positionInRoot().y.toDp()
     }
 
+    val isTargetInGutter = gutterArea > yOffset || yOffset > screenHeight.dp.minus(gutterArea)
+
     val maxDimension =
         max(targetCords.size.width.absoluteValue, targetCords.size.height.absoluteValue)
     val targetRadius = maxDimension / 2f + 40f
@@ -160,22 +162,17 @@ fun TargetContent(
                 center = targetRect.center,
                 blendMode = BlendMode.Xor
             )
-
-            //drawRect(Color.Cyan.copy(alpha = 0.3f), topLeft = rect.topLeft, size = rect.size)
-            // drawCircle(Color.Yellow.copy(alpha = 0.3f), radius = outerRadius, center = rect.center)
         }
 
         ShowCaseText(target, targetRect, targetRadius) { textCoords ->
             val contentRect = textCoords.boundsInParent()
+            val outerRect = getOuterRect(contentRect, targetRect, isTargetInGutter)
+            val possibleOffset = getOuterCircleCenter(targetRect, contentRect, targetRadius)
 
-            val isInGutter = gutterArea > yOffset || yOffset > screenHeight.dp.minus(gutterArea)
-
-            val outerRect = getOuterRect(contentRect, targetRect)
-
-            outerOffset = if (isInGutter) {
+            outerOffset = if (isTargetInGutter) {
                 outerRect.center
             } else {
-                getOuterCircleCenter(targetRect, contentRect, targetRadius)
+                possibleOffset
             }
 
             outerRadius = getOuterRadius(outerRect) + targetRadius
@@ -251,12 +248,12 @@ fun getOuterCircleCenter(
     return Offset(outerCenterX, outerCenterY)
 }
 
-fun getOuterRect(textRect: Rect, targetRect: Rect): Rect {
+fun getOuterRect(contentRect: Rect, targetRect: Rect, isTargetInGutter: Boolean): Rect {
 
-    val topLeftX = min(textRect.topLeft.x, targetRect.topLeft.x)
-    val topLeftY = min(textRect.topLeft.y, targetRect.topLeft.y)
-    val bottomRightX = max(textRect.bottomRight.x, targetRect.bottomRight.x)
-    val bottomRightY = max(textRect.bottomRight.y, targetRect.bottomRight.y)
+    val topLeftX = min(contentRect.topLeft.x, targetRect.topLeft.x)
+    val topLeftY = min(contentRect.topLeft.y, targetRect.topLeft.y)
+    val bottomRightX = max(contentRect.bottomRight.x, targetRect.bottomRight.x)
+    val bottomRightY = max(contentRect.bottomRight.y, targetRect.bottomRight.y)
 
     return Rect(topLeftX, topLeftY, bottomRightX, bottomRightY)
 }
