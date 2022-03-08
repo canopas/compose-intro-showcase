@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,8 +71,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShowcaseSample() {
-    val context = LocalContext.current
-
     val targets = remember {
         mutableStateMapOf<String, IntroShowcaseTargets>()
     }
@@ -93,25 +91,34 @@ fun ShowcaseSample() {
                             modifier = Modifier.onGloballyPositioned { coordinates ->
                                 targets["back"] = IntroShowcaseTargets(
                                     4, coordinates,
+                                    style = ShowcaseStyle.Default.copy(
+                                        backgroundColor = Color(0xFF7C99AC), // specify color of background
+                                        backgroundAlpha = 0.98f, // specify transparency of background
+                                        targetCircleColor = Color.White // specify color of target circle
+                                    ),
                                     content = {
-                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
                                             Image(
-                                                painterResource(id = R.drawable.search_example),
+                                                painterResource(id = R.drawable.go_back),
                                                 contentDescription = null,
-                                                modifier = Modifier.size(100.dp)
+                                                modifier = Modifier
+                                                    .size(100.dp)
+                                                    .padding(top = 10.dp)
                                             )
+                                            Column {
+                                                Text(
+                                                    text = "Go back!!",
+                                                    color = Color.White,
+                                                    fontSize = 24.sp,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                                Text(
+                                                    text = "You can go back by clicking here.",
+                                                    color = Color.White,
+                                                    fontSize = 16.sp
+                                                )
+                                            }
 
-                                            Text(
-                                                text = "Go back!!",
-                                                color = Color.White,
-                                                fontSize = 24.sp,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                            Text(
-                                                text = "You can go back by clicking here.",
-                                                color = Color.White,
-                                                fontSize = 16.sp
-                                            )
                                         }
                                     }
                                 )
@@ -124,7 +131,12 @@ fun ShowcaseSample() {
                             onClick = {},
                             modifier = Modifier.onGloballyPositioned { coordinates ->
                                 targets["search"] = IntroShowcaseTargets(
-                                    3, coordinates,
+                                    2, coordinates,
+                                    style = ShowcaseStyle.Default.copy(
+                                        backgroundColor = Color(0xFF9AD0EC), // specify color of background
+                                        backgroundAlpha = 0.98f, // specify transparency of background
+                                        targetCircleColor = Color.White // specify color of target circle
+                                    ),
                                     content = {
                                         Column {
                                             Image(
@@ -135,13 +147,13 @@ fun ShowcaseSample() {
 
                                             Text(
                                                 text = "Search anything!!",
-                                                color = Color.White,
+                                                color = Color.Black,
                                                 fontSize = 24.sp,
                                                 fontWeight = FontWeight.Bold
                                             )
                                             Text(
                                                 text = "You can search anything by clicking here.",
-                                                color = Color.White,
+                                                color = Color.Black,
                                                 fontSize = 16.sp
                                             )
                                         }
@@ -275,9 +287,8 @@ fun ShowcaseSample() {
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, bottom = 16.dp)
                         .onGloballyPositioned { coordinates ->
-
                             targets["follow"] = IntroShowcaseTargets(
-                                2, coordinates,
+                                3, coordinates,
                                 content = {
                                     Column {
                                         Text(
