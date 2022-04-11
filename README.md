@@ -27,7 +27,7 @@ Please see [sample application](https://github.com/canopas/Intro-showcase-view/t
 For more details about the library implementation, checkout the [Article](https://blog.canopas.com/intro-showcase-view-in-jetpack-compose-ac044cd3bf28)
 
 # Bugs and Feedback
-For bugs, questions and discussions please use the [Github Issues](https://github.com/canopas/JetTapTarget/issues).
+For bugs, questions and discussions please use the [Github Issues](https://github.com/canopas/Intro-showcase-view/issues).
 
 # Credits
 
