@@ -26,17 +26,20 @@ implementation 'com.canopas.intro-showcase-view:introshowcaseview:1.0.5'
 ```kotlin
 @Composable
 fun ShowcaseSample() {
-    val introShowCaseState = rememberIntroShowCaseState()
-
     var showAppIntro by remember {
         mutableStateOf(true)
     }
 
-    Box {
+    IntroShowCaseScaffold(
+        showIntroShowCase = showAppIntro,
+        onShowCaseCompleted = {
+            //App Intro finished!!
+            showAppIntro = false
+        },
+    ) {
         FloatingActionButton(
             onClick = {},
             modifier = Modifier.introShowCaseTarget(
-                state = introShowCaseState,
                 index = 0,
                 style = ShowcaseStyle.Default.copy(
                     backgroundColor = Color(0xFF1C0A00), // specify color of background
@@ -77,13 +80,6 @@ fun ShowcaseSample() {
                 Icons.Filled.Email,
                 contentDescription = "Email"
             )
-        }
-
-        if (showAppIntro) {
-            IntroShowCase(introShowCaseState) {
-                //App Intro finished!!
-                showAppIntro = false
-            }
         }
     }
 }
