@@ -36,12 +36,27 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlinx.coroutines.delay
+
+@Composable
+fun IntroShowCase(
+    state: IntroShowCaseState,
+    onShowcaseCompleted: () -> Unit
+) {
+    state.currentTarget?.let {
+        TargetContent(it) {
+            state.currentTargetIndex++
+            if (state.currentTarget == null) {
+                onShowcaseCompleted()
+            }
+        }
+    }
+}
 
 @Composable
 fun IntroShowCase(
