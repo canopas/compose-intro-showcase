@@ -19,79 +19,74 @@ Available on [Maven Central](https://search.maven.org/artifact/com.canopas.intro
 
 Add the dependency
 ```gradle
-    implementation 'com.canopas.intro-showcase-view:introshowcaseview:1.0.5'
-
+implementation 'com.canopas.intro-showcase-view:introshowcaseview:1.0.5'
 ```
 
 ## How to use ?
 ```kotlin
 @Composable
 fun ShowcaseSample() {
-  val targets = remember {
-          mutableStateMapOf<String, IntroShowcaseTargets>()
-      }
-      var showAppIntro by remember {
-          mutableStateOf(true)
-      }
+    val introShowCaseState = rememberIntroShowCaseState()
 
-      Box {
-          FloatingActionButton(
-              onClick = {},
-              modifier = Modifier.onGloballyPositioned { coordinates ->
-                  targets["email"] = IntroShowcaseTargets(
-                      1, coordinates,
-                      style = ShowcaseStyle.Default.copy(
-                          backgroundColor = Color(0xFF1C0A00), // specify color of background
-                          backgroundAlpha = 0.98f, // specify transparency of background
-                          targetCircleColor = Color.White // specify color of target circle
-                      ),
-                      // specify the content to show to introduce app feature
-                      content = {
-                          Column {
-                              Text(
-                                  text = "Check emails",
-                                  color = Color.White,
-                                  fontSize = 24.sp,
-                                  fontWeight = FontWeight.Bold
-                              )
-                              Text(
-                                  text = "Click here to check/send emails",
-                                  color = Color.White,
-                                  fontSize = 16.sp
-                              )
-                              Spacer(modifier = Modifier.height(10.dp))
-                              Icon(
-                                  painterResource(id = R.drawable.right_arrow),
-                                  contentDescription = null,
-                                  modifier = Modifier
-                                      .size(80.dp)
-                                      .align(Alignment.End),
-                                  tint = Color.White
-                              )
-                          }
+    var showAppIntro by remember {
+        mutableStateOf(true)
+    }
 
-                      }
-                  )
-              },
-              backgroundColor = ThemeColor,
-              contentColor = Color.White,
-              elevation = FloatingActionButtonDefaults.elevation(6.dp)
-          ) {
-              Icon(
-                  Icons.Filled.Email,
-                  contentDescription = "Email"
-              )
-          }
+    Box {
+        FloatingActionButton(
+            onClick = {},
+            modifier = Modifier.introShowCaseTarget(
+                state = introShowCaseState,
+                index = 0,
+                style = ShowcaseStyle.Default.copy(
+                    backgroundColor = Color(0xFF1C0A00), // specify color of background
+                    backgroundAlpha = 0.98f, // specify transparency of background
+                    targetCircleColor = Color.White // specify color of target circle
+                ),
+                // specify the content to show to introduce app feature
+                content = {
+                    Column {
+                        Text(
+                            text = "Check emails",
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Click here to check/send emails",
+                            color = Color.White,
+                            fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Icon(
+                            painterResource(id = R.drawable.right_arrow),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(80.dp)
+                                .align(Alignment.End),
+                            tint = Color.White
+                        )
+                    }
+                }
+            ),
+            backgroundColor = ThemeColor,
+            contentColor = Color.White,
+            elevation = FloatingActionButtonDefaults.elevation(6.dp)
+        ) {
+            Icon(
+                Icons.Filled.Email,
+                contentDescription = "Email"
+            )
+        }
 
-          if (showAppIntro) {
-              IntroShowCase(targets) {
-                  //App Intro finished!!
-                  showAppIntro = false
-              }
-          }
-      }
+        if (showAppIntro) {
+            IntroShowCase(introShowCaseState) {
+                //App Intro finished!!
+                showAppIntro = false
+            }
+        }
+    }
 }
-
 ```
 <img src="assets/intro2.gif" height="480" />
 <img src="assets/intro3.gif" height="480" />
