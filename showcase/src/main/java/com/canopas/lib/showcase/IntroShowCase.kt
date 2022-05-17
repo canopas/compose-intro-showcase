@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -52,27 +51,6 @@ fun IntroShowCase(
         TargetContent(it) {
             state.currentTargetIndex++
             if (state.currentTarget == null) {
-                onShowcaseCompleted()
-            }
-        }
-    }
-}
-
-@Composable
-fun IntroShowCase(
-    targets: SnapshotStateMap<String, IntroShowcaseTargets>,
-    onShowcaseCompleted: () -> Unit
-) {
-    val uniqueTargets = targets.values.sortedBy { it.index }
-    var currentTargetIndex by remember { mutableStateOf(0) }
-
-    val currentTarget =
-        if (uniqueTargets.isNotEmpty() && currentTargetIndex < uniqueTargets.size) uniqueTargets[currentTargetIndex] else null
-
-
-    currentTarget?.let {
-        TargetContent(it) {
-            if (++currentTargetIndex >= uniqueTargets.size) {
                 onShowcaseCompleted()
             }
         }
