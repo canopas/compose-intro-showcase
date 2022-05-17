@@ -46,10 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
-import com.canopas.lib.showcase.IntroShowCase
+import com.canopas.lib.showcase.IntroShowCaseScaffold
 import com.canopas.lib.showcase.ShowcaseStyle
-import com.canopas.lib.showcase.introShowCaseTarget
-import com.canopas.lib.showcase.rememberIntroShowCaseState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,13 +68,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShowcaseSample() {
-    val introShowCaseState = rememberIntroShowCaseState()
-
     var showAppIntro by remember {
         mutableStateOf(true)
     }
 
-    Box {
+    IntroShowCaseScaffold(
+        showIntroShowCase = showAppIntro,
+        onShowCaseCompleted = {
+            //App Intro finished!!
+            showAppIntro = false
+        },
+    ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -85,9 +87,9 @@ fun ShowcaseSample() {
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
                     navigationIcon = {
-                        IconButton(onClick = {},
+                        IconButton(
+                            onClick = {},
                             modifier = Modifier.introShowCaseTarget(
-                                state = introShowCaseState,
                                 index = 4,
                                 style = ShowcaseStyle.Default.copy(
                                     backgroundColor = Color(0xFF7C99AC), // specify color of background
@@ -127,7 +129,6 @@ fun ShowcaseSample() {
                         IconButton(
                             onClick = {},
                             modifier = Modifier.introShowCaseTarget(
-                                state = introShowCaseState,
                                 index = 2,
                                 style = ShowcaseStyle.Default.copy(
                                     backgroundColor = Color(0xFF9AD0EC), // specify color of background
@@ -166,7 +167,6 @@ fun ShowcaseSample() {
                 FloatingActionButton(
                     onClick = {},
                     modifier = Modifier.introShowCaseTarget(
-                        state = introShowCaseState,
                         index = 1,
                         style = ShowcaseStyle.Default.copy(
                             backgroundColor = Color(0xFF1C0A00), // specify color of background
@@ -241,7 +241,6 @@ fun ShowcaseSample() {
                             .align(Alignment.TopCenter)
                             .clip(CircleShape)
                             .introShowCaseTarget(
-                                state = introShowCaseState,
                                 index = 0, // specify index to show feature in order
                                 // ShowcaseStyle is optional
                                 style = ShowcaseStyle.Default.copy(
@@ -279,7 +278,6 @@ fun ShowcaseSample() {
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, bottom = 16.dp)
                         .introShowCaseTarget(
-                            state = introShowCaseState,
                             index = 3,
                             content = {
                                 Column {
@@ -300,14 +298,6 @@ fun ShowcaseSample() {
                 ) {
                     Text(text = "Follow")
                 }
-
-            }
-        }
-
-        if (showAppIntro) {
-            IntroShowCase(introShowCaseState) {
-                //App Intro finished!!
-                showAppIntro = false
             }
         }
     }

@@ -45,13 +45,13 @@ import kotlin.math.sqrt
 @Composable
 fun IntroShowCase(
     state: IntroShowCaseState,
-    onShowcaseCompleted: () -> Unit
+    onShowCaseCompleted: () -> Unit
 ) {
     state.currentTarget?.let {
         TargetContent(it) {
             state.currentTargetIndex++
             if (state.currentTarget == null) {
-                onShowcaseCompleted()
+                onShowCaseCompleted()
             }
         }
     }
