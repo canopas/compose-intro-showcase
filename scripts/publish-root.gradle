@@ -6,6 +6,7 @@ ext["signing.keyId"] = ''
 ext["signing.password"] = ''
 ext["signing.key"] = ''
 ext["snapshot"] = ''
+ext["publish_version"] = ''
 
 File secretPropsFile = project.rootProject.file('local.properties')
 
@@ -28,6 +29,7 @@ if (secretPropsFile.exists()) {
     ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
     ext["signing.key"] = System.getenv('SIGNING_KEY')
     ext["snapshot"] = System.getenv('SNAPSHOT')
+    ext["publish_version"] = System.getenv('PUBLISH_VERSION')
 }
 
 // Set up Sonatype repository
