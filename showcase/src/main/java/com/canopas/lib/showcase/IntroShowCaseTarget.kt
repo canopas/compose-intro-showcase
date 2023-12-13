@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
@@ -38,6 +39,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
@@ -75,6 +77,8 @@ private fun TargetContent(
         targetCords.positionInRoot().y.toDp()
     }
 
+    var dismissShowcaseRequest by remember(target) { mutableStateOf(false) }
+
     val isTargetInGutter = gutterArea > yOffset || yOffset > screenHeight.dp.minus(gutterArea)
 
     val maxDimension =
@@ -86,20 +90,23 @@ private fun TargetContent(
         repeatMode = RepeatMode.Restart,
     )
 
-    var outerOffset by remember {
+    var outerOffset by remember(target) {
         mutableStateOf(Offset(0f, 0f))
     }
 
-    var outerRadius by remember {
+    var outerRadius by remember(target) {
         mutableStateOf(0f)
     }
 
     val outerAnimatable = remember { Animatable(0.6f) }
+    val outerAlphaAnimatable = remember(target) { Animatable(0f) }
 
-    val animatables = listOf(
-        remember { Animatable(0f) },
-        remember { Animatable(0f) }
-    )
+    val animatables = remember(target) {
+        listOf(
+            Animatable(0f),
+            Animatable(0f)
+        )
+    }
 
     LaunchedEffect(target) {
         outerAnimatable.snapTo(0.6f)
@@ -113,6 +120,40 @@ private fun TargetContent(
         )
     }
 
+    LaunchedEffect(target) {
+        outerAlphaAnimatable.animateTo(
+            targetValue = target.style.backgroundAlpha,
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = FastOutSlowInEasing,
+            ),
+        )
+    }
+
+    LaunchedEffect(dismissShowcaseRequest) {
+        if (dismissShowcaseRequest) {
+            launch {
+                outerAlphaAnimatable.animateTo(
+                    0f,
+                    animationSpec = tween(
+                        durationMillis = 200
+                    )
+                )
+            }
+            launch {
+                outerAnimatable.animateTo(
+                    targetValue = 0.6f,
+                    animationSpec = tween(
+                        durationMillis = 350,
+                        easing = FastOutSlowInEasing,
+                    )
+                )
+            }
+            delay(350)
+            onShowcaseCompleted()
+        }
+    }
+
     animatables.forEachIndexed { index, animatable ->
         LaunchedEffect(animatable) {
             delay(index * 1000L)
@@ -123,14 +164,14 @@ private fun TargetContent(
     }
 
     val dys = animatables.map { it.value }
-    Box {
+    Box(modifier = Modifier.alpha(outerAlphaAnimatable.value)) {
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(target) {
                     detectTapGestures { tapOffeset ->
                         if (targetRect.contains(tapOffeset)) {
-                            onShowcaseCompleted()
+                            dismissShowcaseRequest = true
                         }
                     }
                 }
@@ -139,7 +180,7 @@ private fun TargetContent(
                         it.clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
-                        ) { onShowcaseCompleted() }
+                        ) { dismissShowcaseRequest = true }
                     } else it
                 }
                 .graphicsLayer(alpha = 0.99f)
@@ -193,7 +234,7 @@ private fun ShowCaseText(
     updateContentCoordinates: (LayoutCoordinates) -> Unit
 ) {
 
-    var contentOffsetY by remember {
+    var contentOffsetY by remember(currentTarget) {
         mutableStateOf(0f)
     }
 
