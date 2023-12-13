@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
-import com.canopas.lib.showcase.IntroShowCaseScaffold
+import com.canopas.lib.showcase.IntroShowCase
 import com.canopas.lib.showcase.IntroShowCaseScope
 import com.canopas.lib.showcase.ShowcaseStyle
 
@@ -77,7 +77,7 @@ fun ShowcaseSample() {
         mutableStateOf(true)
     }
 
-    IntroShowCaseScaffold(
+    IntroShowCase(
         showIntroShowCase = showAppIntro,
         onShowCaseCompleted = {
             //App Intro finished!!
