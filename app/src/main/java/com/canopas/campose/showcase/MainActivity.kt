@@ -53,15 +53,13 @@ import com.canopas.lib.showcase.ShowcaseStyle
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //  WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             JetTapTargetTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 25.dp),
+                        .fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
                     ShowcaseSample()
@@ -79,6 +77,7 @@ fun ShowcaseSample() {
 
     IntroShowCase(
         showIntroShowCase = showAppIntro,
+        dismissOnClickOutside = false,
         onShowCaseCompleted = {
             //App Intro finished!!
             showAppIntro = false
@@ -136,7 +135,7 @@ fun ShowcaseSample() {
                 FloatingMailButton()
             }
         ) {
-            Content()
+            Content(Modifier.padding(it))
         }
     }
 }
@@ -233,8 +232,8 @@ fun IntroShowCaseScope.BackButton() {
 }
 
 @Composable
-fun IntroShowCaseScope.Content() {
-    Box(modifier = Modifier.fillMaxSize()) {
+fun IntroShowCaseScope.Content(modifier: Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxHeight(0.3f)) {
 
             Column(

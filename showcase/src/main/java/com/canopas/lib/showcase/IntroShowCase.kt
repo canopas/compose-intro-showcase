@@ -12,6 +12,7 @@ fun IntroShowCase(
     onShowCaseCompleted: () -> Unit,
     modifier: Modifier = Modifier,
     state: IntroShowCaseState = rememberIntroShowCaseState(),
+    dismissOnClickOutside: Boolean = false,
     content: @Composable IntroShowCaseScope.() -> Unit,
 ) {
     val scope = remember(state) {
@@ -25,6 +26,7 @@ fun IntroShowCase(
         if (showIntroShowCase) {
             IntroShowCaseTarget(
                 state = state,
+                dismissOnClickOutside = dismissOnClickOutside,
                 onShowCaseCompleted = onShowCaseCompleted,
             )
         }
