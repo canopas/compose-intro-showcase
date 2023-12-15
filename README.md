@@ -21,7 +21,7 @@ Add the dependency
 
 ```
 # Documentation
-Please see [sample application](https://github.com/canopas/Intro-showcase-view/tree/master/app) and [the website](https://canopas.github.io/Intro-showcase-view/) for more information.
+Please see [sample application](https://github.com/canopas/Intro-showcase-view/tree/master/app) and [the website](https://canopas.github.io/compose-intro-showcase/) for more information.
 
 # Further reading
 For more details about the library implementation, checkout the [Article](https://blog.canopas.com/intro-showcase-view-in-jetpack-compose-ac044cd3bf28)
