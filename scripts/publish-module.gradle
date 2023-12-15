@@ -1,7 +1,7 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-task androidSourcesJar(type: Jar) {
+tasks.register('androidSourcesJar', Jar) {
     archiveClassifier.set('sources')
     if (project.plugins.findPlugin("com.android.library")) {
         from android.sourceSets.main.java.srcDirs
@@ -9,6 +9,7 @@ task androidSourcesJar(type: Jar) {
         from sourceSets.main.java.srcDirs
     }
 }
+
 
 artifacts {
     archives androidSourcesJar
@@ -20,6 +21,8 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
+                tasks.named("generateMetadataFileForReleasePublication").configure { dependsOn("androidSourcesJar") }
+
                 // The coordinates of the library, being set from variables that
                 // we'll set up later
                 groupId PUBLISH_GROUP_ID
