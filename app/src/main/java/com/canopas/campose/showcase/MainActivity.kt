@@ -46,17 +46,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
-import com.canopas.lib.showcase.IntroShowCaseScaffold
+import com.canopas.lib.showcase.IntroShowCase
+import com.canopas.lib.showcase.IntroShowCaseScope
 import com.canopas.lib.showcase.ShowcaseStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             JetTapTargetTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
                     ShowcaseSample()
@@ -72,8 +75,9 @@ fun ShowcaseSample() {
         mutableStateOf(true)
     }
 
-    IntroShowCaseScaffold(
+    IntroShowCase(
         showIntroShowCase = showAppIntro,
+        dismissOnClickOutside = false,
         onShowCaseCompleted = {
             //App Intro finished!!
             showAppIntro = false
@@ -87,49 +91,13 @@ fun ShowcaseSample() {
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
                     navigationIcon = {
-                        IconButton(
-                            onClick = {},
-                            modifier = Modifier.introShowCaseTarget(
-                                index = 4,
-                                style = ShowcaseStyle.Default.copy(
-                                    backgroundColor = Color(0xFF7C99AC), // specify color of background
-                                    backgroundAlpha = 0.98f, // specify transparency of background
-                                    targetCircleColor = Color.White // specify color of target circle
-                                ),
-                                content = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Image(
-                                            painterResource(id = R.drawable.go_back),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(100.dp)
-                                                .padding(top = 10.dp)
-                                        )
-                                        Column {
-                                            Text(
-                                                text = "Go back!!",
-                                                color = Color.White,
-                                                fontSize = 24.sp,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                            Text(
-                                                text = "You can go back by clicking here.",
-                                                color = Color.White,
-                                                fontSize = 16.sp
-                                            )
-                                        }
-                                    }
-                                },
-                            )
-                        ) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Search")
-                        }
+                        BackButton()
                     },
                     actions = {
                         IconButton(
                             onClick = {},
                             modifier = Modifier.introShowCaseTarget(
-                                index = 2,
+                                index = 0,
                                 style = ShowcaseStyle.Default.copy(
                                     backgroundColor = Color(0xFF9AD0EC), // specify color of background
                                     backgroundAlpha = 0.98f, // specify transparency of background
@@ -164,141 +132,196 @@ fun ShowcaseSample() {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {},
-                    modifier = Modifier.introShowCaseTarget(
-                        index = 1,
+                FloatingMailButton()
+            }
+        ) {
+            Content(Modifier.padding(it))
+        }
+    }
+}
+
+
+@Composable
+fun IntroShowCaseScope.FloatingMailButton() {
+    FloatingActionButton(
+        onClick = {},
+        modifier = Modifier.introShowCaseTarget(
+            index = 1,
+            style = ShowcaseStyle.Default.copy(
+                backgroundColor = Color(0xFF1C0A00), // specify color of background
+                backgroundAlpha = 0.98f, // specify transparency of background
+                targetCircleColor = Color.White // specify color of target circle
+            ),
+            // specify the content to show to introduce app feature
+            content = {
+                Column {
+                    Text(
+                        text = "Check emails",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Click here to check/send emails",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Icon(
+                        painterResource(id = R.drawable.right_arrow),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .align(Alignment.End),
+                        tint = Color.White
+                    )
+                }
+            }
+        ),
+        backgroundColor = ThemeColor,
+        contentColor = Color.White,
+        elevation = FloatingActionButtonDefaults.elevation(6.dp)
+    ) {
+        Icon(
+            Icons.Filled.Email,
+            contentDescription = "Email"
+        )
+    }
+
+}
+
+@Composable
+fun IntroShowCaseScope.BackButton() {
+    IconButton(
+        onClick = {},
+        modifier = Modifier.introShowCaseTarget(
+            index = 4,
+            style = ShowcaseStyle.Default.copy(
+                backgroundColor = Color(0xFF7C99AC), // specify color of background
+                backgroundAlpha = 0.98f, // specify transparency of background
+                targetCircleColor = Color.White // specify color of target circle
+            ),
+            content = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painterResource(id = R.drawable.go_back),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(top = 10.dp)
+                    )
+                    Column {
+                        Text(
+                            text = "Go back!!",
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "You can go back by clicking here.",
+                            color = Color.White,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            },
+        )
+    ) {
+        Icon(Icons.Filled.ArrowBack, contentDescription = "Search")
+    }
+}
+
+@Composable
+fun IntroShowCaseScope.Content(modifier: Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxHeight(0.3f)) {
+
+            Column(
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .height(90.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = "Intro Showcase view", fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp, color = ThemeColor
+                )
+                Text(
+                    text = "This is an example of Intro Showcase view",
+                    fontSize = 20.sp, color = Color.Black, textAlign = TextAlign.Center
+                )
+
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_unknown_profile),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .clip(CircleShape)
+                    .introShowCaseTarget(
+                        index = 2, // specify index to show feature in order
+                        // ShowcaseStyle is optional
                         style = ShowcaseStyle.Default.copy(
-                            backgroundColor = Color(0xFF1C0A00), // specify color of background
+                            backgroundColor = Color(0xFFFFCC80), // specify color of background
                             backgroundAlpha = 0.98f, // specify transparency of background
                             targetCircleColor = Color.White // specify color of target circle
                         ),
-                        // specify the content to show to introduce app feature
                         content = {
-                            Column {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 20.dp)
+                            ) {
                                 Text(
-                                    text = "Check emails",
+                                    text = "User profile",
                                     color = Color.White,
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "Click here to check/send emails",
+                                    text = "Click here to update your profile",
                                     color = Color.White,
                                     fontSize = 16.sp
                                 )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Icon(
-                                    painterResource(id = R.drawable.right_arrow),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(80.dp)
-                                        .align(Alignment.End),
-                                    tint = Color.White
-                                )
                             }
                         }
-                    ),
-                    backgroundColor = ThemeColor,
-                    contentColor = Color.White,
-                    elevation = FloatingActionButtonDefaults.elevation(6.dp)
-                ) {
-                    Icon(
-                        Icons.Filled.Email,
-                        contentDescription = "Email"
                     )
-                }
-            }
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.fillMaxHeight(0.3f)) {
+            )
+        }
 
-                    Column(
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .height(90.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        Text(
-                            text = "Intro Showcase view", fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp, color = ThemeColor
-                        )
-                        Text(
-                            text = "This is an example of Intro Showcase view",
-                            fontSize = 20.sp, color = Color.Black, textAlign = TextAlign.Center
-                        )
-
-                    }
-
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_unknown_profile),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .clip(CircleShape)
-                            .introShowCaseTarget(
-                                index = 0, // specify index to show feature in order
-                                // ShowcaseStyle is optional
-                                style = ShowcaseStyle.Default.copy(
-                                    backgroundColor = Color(0xFFFFCC80), // specify color of background
-                                    backgroundAlpha = 0.98f, // specify transparency of background
-                                    targetCircleColor = Color.White // specify color of target circle
-                                ),
-                                content = {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = 20.dp)
-                                    ) {
-                                        Text(
-                                            text = "User profile",
-                                            color = Color.White,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "Click here to update your profile",
-                                            color = Color.White,
-                                            fontSize = 16.sp
-                                        )
-                                    }
-                                }
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = 16.dp)
+                .introShowCaseTarget(
+                    index = 3,
+                    content = {
+                        Column {
+                            Text(
+                                text = "Follow me",
+                                color = Color.White,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
                             )
-                    )
-                }
-
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 16.dp)
-                        .introShowCaseTarget(
-                            index = 3,
-                            content = {
-                                Column {
-                                    Text(
-                                        text = "Follow me",
-                                        color = Color.White,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = "Click here to follow",
-                                        color = Color.White,
-                                        fontSize = 16.sp
-                                    )
-                                }
-                            }
-                        )
-                ) {
-                    Text(text = "Follow")
-                }
-            }
+                            Text(
+                                text = "Click here to follow",
+                                color = Color.White,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                )
+        ) {
+            Text(text = "Follow")
         }
     }
+
 }
+

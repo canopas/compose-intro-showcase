@@ -31,7 +31,7 @@ fun rememberIntroShowCaseState(
 }
 
 /**
- * Modifier that marks Compose UI element as a target for [IntroShowCase]
+ * Modifier that marks Compose UI element as a target for [IntroShowCaseTarget]
  */
 fun Modifier.introShowCaseTarget(
     state: IntroShowCaseState,
