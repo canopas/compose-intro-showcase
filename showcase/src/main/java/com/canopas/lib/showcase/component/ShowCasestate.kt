@@ -1,4 +1,4 @@
-package com.canopas.lib.showcase
+package com.canopas.lib.showcase.component
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
@@ -11,20 +11,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 
 /**
- * Creates a [IntroShowCaseState] that is remembered across compositions.
+ * Creates a [IntroShowcaseState] that is remembered across compositions.
  *
  * Changes to the provided values for [initialIndex] will **not** result in the state being
  * recreated or changed in any way if it has already
  * been created.
  *
- * @param initialIndex the initial value for [IntroShowCaseState.currentTargetIndex]
+ * @param initialIndex the initial value for [IntroShowcaseState.currentTargetIndex]
  */
 @Composable
-fun rememberIntroShowCaseState(
+fun rememberIntroShowcaseState(
     initialIndex: Int = 0,
-): IntroShowCaseState {
+): IntroShowcaseState {
     return remember {
-        IntroShowCaseState(
+        IntroShowcaseState(
             initialIndex = initialIndex,
         )
     }
@@ -33,8 +33,8 @@ fun rememberIntroShowCaseState(
 /**
  * Modifier that marks Compose UI element as a target for [IntroShowCaseTarget]
  */
-fun Modifier.introShowCaseTarget(
-    state: IntroShowCaseState,
+internal fun Modifier.introShowcaseTarget(
+    state: IntroShowcaseState,
     index: Int,
     style: ShowcaseStyle = ShowcaseStyle.Default,
     content: @Composable BoxScope.() -> Unit,
@@ -47,7 +47,7 @@ fun Modifier.introShowCaseTarget(
     )
 }
 
-class IntroShowCaseState internal constructor(
+class IntroShowcaseState internal constructor(
     initialIndex: Int,
 ) {
 

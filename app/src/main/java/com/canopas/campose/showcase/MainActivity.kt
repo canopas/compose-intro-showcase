@@ -46,9 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
-import com.canopas.lib.showcase.IntroShowCase
-import com.canopas.lib.showcase.IntroShowCaseScope
-import com.canopas.lib.showcase.ShowcaseStyle
+import com.canopas.lib.showcase.IntroShowcase
+import com.canopas.lib.showcase.IntroShowcaseScope
+import com.canopas.lib.showcase.component.ShowcaseStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ fun ShowcaseSample() {
         mutableStateOf(true)
     }
 
-    IntroShowCase(
+    IntroShowcase(
         showIntroShowCase = showAppIntro,
         dismissOnClickOutside = false,
         onShowCaseCompleted = {
@@ -142,7 +142,7 @@ fun ShowcaseSample() {
 
 
 @Composable
-fun IntroShowCaseScope.FloatingMailButton() {
+fun IntroShowcaseScope.FloatingMailButton() {
     FloatingActionButton(
         onClick = {},
         modifier = Modifier.introShowCaseTarget(
@@ -191,7 +191,7 @@ fun IntroShowCaseScope.FloatingMailButton() {
 }
 
 @Composable
-fun IntroShowCaseScope.BackButton() {
+fun IntroShowcaseScope.BackButton() {
     IconButton(
         onClick = {},
         modifier = Modifier.introShowCaseTarget(
@@ -232,7 +232,7 @@ fun IntroShowCaseScope.BackButton() {
 }
 
 @Composable
-fun IntroShowCaseScope.Content(modifier: Modifier) {
+fun IntroShowcaseScope.Content(modifier: Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxHeight(0.3f)) {
 

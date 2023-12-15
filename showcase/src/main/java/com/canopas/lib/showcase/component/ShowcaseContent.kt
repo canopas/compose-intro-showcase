@@ -1,4 +1,4 @@
-package com.canopas.lib.showcase
+package com.canopas.lib.showcase.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,11 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
@@ -47,39 +45,37 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Composable
-fun IntroShowCaseTarget(
-    state: IntroShowCaseState,
+fun ShowcasePopup(
+    state: IntroShowcaseState,
     dismissOnClickOutside: Boolean,
     onShowCaseCompleted: () -> Unit,
 ) {
     state.currentTarget?.let {
-        TargetContent(target = it, dismissOnClickOutside = dismissOnClickOutside) {
-            state.currentTargetIndex++
-            if (state.currentTarget == null) {
-                onShowCaseCompleted()
+        ShowcaseWindow {
+            ShowcaseContent(
+                target = it,
+                dismissOnClickOutside = dismissOnClickOutside
+            ) {
+                state.currentTargetIndex++
+                if (state.currentTarget == null) {
+                    onShowCaseCompleted()
+                }
             }
         }
     }
 }
 
 @Composable
-private fun TargetContent(
+internal fun ShowcaseContent(
     target: IntroShowcaseTargets,
     dismissOnClickOutside: Boolean,
     onShowcaseCompleted: () -> Unit
 ) {
-    val screenHeight = LocalConfiguration.current.screenHeightDp
-    val targetCords = target.coordinates
-    val gutterArea = 88.dp
-    val targetRect = targetCords.boundsInRoot()
 
-    val yOffset = with(LocalDensity.current) {
-        targetCords.positionInRoot().y.toDp()
-    }
+    val targetCords = target.coordinates
+    val targetRect = targetCords.boundsInWindow()
 
     var dismissShowcaseRequest by remember(target) { mutableStateOf(false) }
-
-    val isTargetInGutter = gutterArea > yOffset || yOffset > screenHeight.dp.minus(gutterArea)
 
     val maxDimension =
         max(targetCords.size.width.absoluteValue, targetCords.size.height.absoluteValue)
@@ -95,7 +91,7 @@ private fun TargetContent(
     }
 
     var outerRadius by remember(target) {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     val outerAnimatable = remember { Animatable(0.6f) }
@@ -164,7 +160,11 @@ private fun TargetContent(
     }
 
     val dys = animatables.map { it.value }
-    Box(modifier = Modifier.alpha(outerAlphaAnimatable.value)) {
+
+    Box(
+        modifier = Modifier
+            .alpha(outerAlphaAnimatable.value)
+    ) {
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
@@ -210,16 +210,9 @@ private fun TargetContent(
         }
 
         ShowCaseText(target, targetRect, targetRadius) { textCoords ->
-            val contentRect = textCoords.boundsInParent()
+            val contentRect = textCoords.boundsInWindow()
             val outerRect = getOuterRect(contentRect, targetRect)
-            val possibleOffset = getOuterCircleCenter(targetRect, contentRect, targetRadius)
-
-            outerOffset = if (isTargetInGutter) {
-                outerRect.center
-            } else {
-                possibleOffset
-            }
-
+            outerOffset = outerRect.center
             outerRadius = getOuterRadius(outerRect) + targetRadius
         }
     }
@@ -234,9 +227,7 @@ private fun ShowCaseText(
     updateContentCoordinates: (LayoutCoordinates) -> Unit
 ) {
 
-    var contentOffsetY by remember(currentTarget) {
-        mutableStateOf(0f)
-    }
+    var contentOffsetY by remember(currentTarget) { mutableFloatStateOf(0f) }
 
     Box(
         content = currentTarget.content,
@@ -260,37 +251,6 @@ private fun ShowCaseText(
             .padding(16.dp)
     )
 
-}
-
-private fun getOuterCircleCenter(
-    targetRect: Rect,
-    contentRect: Rect,
-    targetRadius: Float
-): Offset {
-    val outerCenterX: Float
-    val outerCenterY: Float
-
-    val contentHeight = contentRect.height
-    val onTop =
-        targetRect.center.y - targetRadius - contentHeight > 0
-
-    val left = min(
-        contentRect.left,
-        targetRect.left - targetRadius
-    )
-    val right = max(
-        contentRect.right,
-        targetRect.right + targetRadius
-    )
-
-    val centerY =
-        if (onTop) targetRect.center.y - targetRadius - contentHeight
-        else targetRect.center.y + targetRadius + contentHeight
-
-    outerCenterY = centerY
-    outerCenterX = (left + right) / 2
-
-    return Offset(outerCenterX, outerCenterY)
 }
 
 private fun getOuterRect(contentRect: Rect, targetRect: Rect): Rect {
