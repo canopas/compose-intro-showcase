@@ -19,7 +19,7 @@ Available on [Maven Central](https://search.maven.org/artifact/com.canopas.intro
 
 Add the dependency
 ```gradle
-implementation 'com.canopas.intro-showcase-view:introshowcaseview:1.0.5'
+implementation 'com.canopas.intro-showcase-view:introshowcaseview:<latest-version>'
 ```
 
 ## How to use ?
@@ -29,9 +29,10 @@ fun ShowcaseSample() {
     var showAppIntro by remember {
         mutableStateOf(true)
     }
-
-    IntroShowCaseScaffold(
+    
+    IntroShowCase(
         showIntroShowCase = showAppIntro,
+        dismissOnClickOutside = false,
         onShowCaseCompleted = {
             //App Intro finished!!
             showAppIntro = false
@@ -84,17 +85,16 @@ fun ShowcaseSample() {
     }
 }
 ```
-<img src="assets/intro2.gif" height="480" />
-<img src="assets/intro3.gif" height="480" />
+<img src="assets/intro2.gif" height="480" /> <img src="assets/intro3.gif" height="480" />
 
 # Demo
-[Sample](https://github.com/canopas/Intro-showcase-view/tree/master/app) app demonstrates how simple the usage of the library actually is.
+[Sample](https://github.com/canopas/compose-intro-showcase/tree/master/app) app demonstrates how simple the usage of the library actually is.
 
 # Interested in library implementation?
 Checkout the [Article](https://blog.canopas.com/intro-showcase-view-in-jetpack-compose-ac044cd3bf28)
 
 # Bugs and Feedback
-For bugs, questions and discussions please use the [Github Issues](https://github.com/canopas/JetTapTarget/issues).
+For bugs, questions and discussions please use the [Github Issues](https://github.com/canopas/compose-intro-showcase/issues).
 
 # Credits
 
