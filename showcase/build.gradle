@@ -43,6 +43,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler_version
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
