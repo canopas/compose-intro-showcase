@@ -36,8 +36,6 @@ afterEvaluate {
                     artifact("$buildDir/libs/${project.getName()}-${version}.jar")
                 }
 
-                artifact androidSourcesJar
-
                 // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
