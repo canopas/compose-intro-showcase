@@ -30,7 +30,7 @@ fun ShowcaseSample() {
         mutableStateOf(true)
     }
     
-    IntroShowCase(
+    IntroShowcase(
         showIntroShowCase = showAppIntro,
         dismissOnClickOutside = false,
         onShowCaseCompleted = {
