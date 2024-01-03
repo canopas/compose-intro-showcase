@@ -17,7 +17,7 @@ Available on [Maven Central](https://search.maven.org/artifact/com.canopas.intro
 
 Add the dependency
 ```gradle
-    implementation 'com.canopas.intro-showcase-view:introshowcaseview:2.0.0'
+    implementation 'com.canopas.intro-showcase-view:introshowcaseview:2.0.1'
 
 ```
 # Documentation
