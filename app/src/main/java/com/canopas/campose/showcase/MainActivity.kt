@@ -48,7 +48,9 @@ import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
 import com.canopas.lib.showcase.IntroShowcase
 import com.canopas.lib.showcase.IntroShowcaseScope
+import com.canopas.lib.showcase.component.IntroShowcaseState
 import com.canopas.lib.showcase.component.ShowcaseStyle
+import com.canopas.lib.showcase.component.rememberIntroShowcaseState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +77,8 @@ fun ShowcaseSample() {
         mutableStateOf(true)
     }
 
+    val introShowcaseState = rememberIntroShowcaseState()
+
     IntroShowcase(
         showIntroShowCase = showAppIntro,
         dismissOnClickOutside = false,
@@ -82,6 +86,7 @@ fun ShowcaseSample() {
             //App Intro finished!!
             showAppIntro = false
         },
+        state = introShowcaseState,
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -91,7 +96,7 @@ fun ShowcaseSample() {
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
                     navigationIcon = {
-                        BackButton()
+                        BackButton(introShowcaseState)
                     },
                     actions = {
                         IconButton(
@@ -191,7 +196,7 @@ fun IntroShowcaseScope.FloatingMailButton() {
 }
 
 @Composable
-fun IntroShowcaseScope.BackButton() {
+fun IntroShowcaseScope.BackButton(introShowcaseState: IntroShowcaseState) {
     IconButton(
         onClick = {},
         modifier = Modifier.introShowCaseTarget(
@@ -222,6 +227,15 @@ fun IntroShowcaseScope.BackButton() {
                             color = Color.White,
                             fontSize = 16.sp
                         )
+
+                        Button(
+                            onClick = {
+                                // Used to restart the intro showcase
+                                introShowcaseState.reset()
+                            },
+                        ) {
+                            Text(text = "Restart Intro")
+                        }
                     }
                 }
             },
