@@ -2,8 +2,10 @@ package com.canopas.lib.showcase
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.canopas.lib.showcase.component.IntroShowcaseManager
 import com.canopas.lib.showcase.component.IntroShowcaseState
 import com.canopas.lib.showcase.component.ShowcasePopup
 import com.canopas.lib.showcase.component.ShowcaseStyle
@@ -20,6 +22,15 @@ fun IntroShowcase(
 ) {
     val scope = remember(state) {
         IntroShowcaseScope(state)
+    }
+
+    DisposableEffect(Unit) {
+        IntroShowcaseManager.registerRestoreHandler {
+            state.currentTargetIndex = 0
+        }
+        onDispose {
+            IntroShowcaseManager.registerRestoreHandler(null)
+        }
     }
 
     scope.content()

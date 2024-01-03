@@ -48,6 +48,7 @@ import com.canopas.campose.showcase.ui.theme.JetTapTargetTheme
 import com.canopas.campose.showcase.ui.theme.ThemeColor
 import com.canopas.lib.showcase.IntroShowcase
 import com.canopas.lib.showcase.IntroShowcaseScope
+import com.canopas.lib.showcase.component.IntroShowcaseManager
 import com.canopas.lib.showcase.component.ShowcaseStyle
 
 class MainActivity : ComponentActivity() {
@@ -222,6 +223,14 @@ fun IntroShowcaseScope.BackButton() {
                             color = Color.White,
                             fontSize = 16.sp
                         )
+
+                        Button(
+                            onClick = {
+                                IntroShowcaseManager.introRestartHandler?.invoke()
+                            },
+                        ) {
+                            Text(text = "Restart Intro")
+                        }
                     }
                 }
             },

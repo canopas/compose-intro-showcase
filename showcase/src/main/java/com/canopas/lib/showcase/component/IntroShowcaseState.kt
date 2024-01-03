@@ -3,8 +3,8 @@ package com.canopas.lib.showcase.component
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -47,13 +47,17 @@ internal fun Modifier.introShowcaseTarget(
     )
 }
 
+/**
+ * State class for managing the state of the IntroShowcase. Tracks the current target index and
+ * associated targets.
+ */
 class IntroShowcaseState internal constructor(
     initialIndex: Int,
 ) {
 
     internal var targets = mutableStateMapOf<Int, IntroShowcaseTargets>()
 
-    var currentTargetIndex by mutableStateOf(initialIndex)
+    var currentTargetIndex by mutableIntStateOf(initialIndex)
         internal set
 
     val currentTarget: IntroShowcaseTargets?
