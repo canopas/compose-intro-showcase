@@ -62,4 +62,11 @@ class IntroShowcaseState internal constructor(
 
     val currentTarget: IntroShowcaseTargets?
         get() = targets[currentTargetIndex]
+
+    /**
+     * Resets the state to its initial values, effectively restarting the showcase.
+     */
+    fun resetState() {
+        currentTargetIndex = 0
+    }
 }
