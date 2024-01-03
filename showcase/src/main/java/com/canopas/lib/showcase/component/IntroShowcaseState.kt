@@ -66,7 +66,7 @@ class IntroShowcaseState internal constructor(
     /**
      * Resets the state to its initial values, effectively restarting the showcase.
      */
-    fun resetState() {
+    fun reset() {
         currentTargetIndex = 0
     }
 }

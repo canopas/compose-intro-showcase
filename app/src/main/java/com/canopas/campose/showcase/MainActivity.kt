@@ -231,7 +231,7 @@ fun IntroShowcaseScope.BackButton(introShowcaseState: IntroShowcaseState) {
                         Button(
                             onClick = {
                                 // Used to restart the intro showcase
-                                introShowcaseState.resetState()
+                                introShowcaseState.reset()
                             },
                         ) {
                             Text(text = "Restart Intro")
