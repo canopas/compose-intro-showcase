@@ -51,6 +51,7 @@ import com.canopas.lib.showcase.IntroShowcaseScope
 import com.canopas.lib.showcase.component.IntroShowcaseState
 import com.canopas.lib.showcase.component.ShowcaseStyle
 import com.canopas.lib.showcase.component.rememberIntroShowcaseState
+import com.canopas.lib.showcase.data.RevealShape
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +87,7 @@ fun ShowcaseSample() {
             //App Intro finished!!
             showAppIntro = false
         },
+        revealShape = RevealShape.Rounded(25f),
         state = introShowcaseState,
     ) {
         Scaffold(
@@ -102,7 +104,7 @@ fun ShowcaseSample() {
                         IconButton(
                             onClick = {},
                             modifier = Modifier.introShowCaseTarget(
-                                index = 0,
+                                index = 2,
                                 style = ShowcaseStyle.Default.copy(
                                     backgroundColor = Color(0xFF9AD0EC), // specify color of background
                                     backgroundAlpha = 0.98f, // specify transparency of background
@@ -278,7 +280,7 @@ fun IntroShowcaseScope.Content(modifier: Modifier) {
                     .align(Alignment.TopCenter)
                     .clip(CircleShape)
                     .introShowCaseTarget(
-                        index = 2, // specify index to show feature in order
+                        index = 0, // specify index to show feature in order
                         // ShowcaseStyle is optional
                         style = ShowcaseStyle.Default.copy(
                             backgroundColor = Color(0xFFFFCC80), // specify color of background

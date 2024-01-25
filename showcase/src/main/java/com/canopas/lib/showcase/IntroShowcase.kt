@@ -9,6 +9,7 @@ import com.canopas.lib.showcase.component.ShowcasePopup
 import com.canopas.lib.showcase.component.ShowcaseStyle
 import com.canopas.lib.showcase.component.introShowcaseTarget
 import com.canopas.lib.showcase.component.rememberIntroShowcaseState
+import com.canopas.lib.showcase.data.RevealShape
 
 @Composable
 fun IntroShowcase(
@@ -16,6 +17,7 @@ fun IntroShowcase(
     onShowCaseCompleted: () -> Unit,
     state: IntroShowcaseState = rememberIntroShowcaseState(),
     dismissOnClickOutside: Boolean = false,
+    revealShape: RevealShape = RevealShape.Circle,
     content: @Composable IntroShowcaseScope.() -> Unit,
 ) {
     val scope = remember(state) {
@@ -27,6 +29,7 @@ fun IntroShowcase(
     if (showIntroShowCase) {
         ShowcasePopup(
             state = state,
+            revealShape = revealShape,
             dismissOnClickOutside = dismissOnClickOutside,
             onShowCaseCompleted = onShowCaseCompleted,
         )
