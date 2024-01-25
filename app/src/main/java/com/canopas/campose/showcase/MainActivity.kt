@@ -104,7 +104,7 @@ fun ShowcaseSample() {
                         IconButton(
                             onClick = {},
                             modifier = Modifier.introShowCaseTarget(
-                                index = 2,
+                                index = 0,
                                 style = ShowcaseStyle.Default.copy(
                                     backgroundColor = Color(0xFF9AD0EC), // specify color of background
                                     backgroundAlpha = 0.98f, // specify transparency of background
@@ -280,7 +280,7 @@ fun IntroShowcaseScope.Content(modifier: Modifier) {
                     .align(Alignment.TopCenter)
                     .clip(CircleShape)
                     .introShowCaseTarget(
-                        index = 0, // specify index to show feature in order
+                        index = 2, // specify index to show feature in order
                         // ShowcaseStyle is optional
                         style = ShowcaseStyle.Default.copy(
                             backgroundColor = Color(0xFFFFCC80), // specify color of background
