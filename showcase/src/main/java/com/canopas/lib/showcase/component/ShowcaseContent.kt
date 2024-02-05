@@ -51,14 +51,12 @@ import kotlin.math.sqrt
 fun ShowcasePopup(
     state: IntroShowcaseState,
     dismissOnClickOutside: Boolean,
-    revealShape: RevealShape = RevealShape.Circle,
     onShowCaseCompleted: () -> Unit,
 ) {
     state.currentTarget?.let {
         ShowcaseWindow {
             ShowcaseContent(
                 target = it,
-                revealShape = revealShape,
                 dismissOnClickOutside = dismissOnClickOutside
             ) {
                 state.currentTargetIndex++
@@ -74,7 +72,6 @@ fun ShowcasePopup(
 internal fun ShowcaseContent(
     target: IntroShowcaseTargets,
     dismissOnClickOutside: Boolean,
-    revealShape: RevealShape = RevealShape.Circle,
     onShowcaseCompleted: () -> Unit
 ) {
 
@@ -191,7 +188,7 @@ internal fun ShowcaseContent(
                 }
                 .graphicsLayer(alpha = 0.99f)
         ) {
-            when (revealShape) {
+            when (target.style.revealShape) {
                 is RevealShape.Circle -> {
                     drawCircle(
                         color = target.style.backgroundColor,
@@ -249,7 +246,7 @@ internal fun ShowcaseContent(
                 }
 
                 is RevealShape.Rounded -> {
-                    val cornerRadius = revealShape.cornerRadius ?: 20f
+                    val cornerRadius = target.style.revealShape.cornerRadius ?: 20f
                     drawRoundRect(
                         color = target.style.backgroundColor,
                         size = Size(outerRadius * 2, outerRadius * 2),
@@ -359,20 +356,23 @@ class ShowcaseStyle(
     val backgroundColor: Color = Color.Black,
     /*@FloatRange(from = 0.0, to = 1.0)*/
     val backgroundAlpha: Float = DEFAULT_BACKGROUND_RADIUS,
-    val targetCircleColor: Color = Color.White
+    val targetCircleColor: Color = Color.White,
+    val revealShape: RevealShape = RevealShape.Circle
 ) {
 
     fun copy(
         backgroundColor: Color = this.backgroundColor,
         /*@FloatRange(from = 0.0, to = 1.0)*/
         backgroundAlpha: Float = this.backgroundAlpha,
-        targetCircleColor: Color = this.targetCircleColor
+        targetCircleColor: Color = this.targetCircleColor,
+        revealShape: RevealShape = this.revealShape
     ): ShowcaseStyle {
 
         return ShowcaseStyle(
             backgroundColor = backgroundColor,
             backgroundAlpha = backgroundAlpha,
-            targetCircleColor = targetCircleColor
+            targetCircleColor = targetCircleColor,
+            revealShape = revealShape
         )
     }
 

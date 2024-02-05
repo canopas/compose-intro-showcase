@@ -87,7 +87,6 @@ fun ShowcaseSample() {
             //App Intro finished!!
             showAppIntro = false
         },
-        revealShape = RevealShape.Rounded(25f),
         state = introShowcaseState,
     ) {
         Scaffold(
@@ -108,7 +107,8 @@ fun ShowcaseSample() {
                                 style = ShowcaseStyle.Default.copy(
                                     backgroundColor = Color(0xFF9AD0EC), // specify color of background
                                     backgroundAlpha = 0.98f, // specify transparency of background
-                                    targetCircleColor = Color.White // specify color of target circle
+                                    targetCircleColor = Color.White, // specify color of target circle
+                                    revealShape = RevealShape.Circle // specify reveal shape - default is Circle
                                 ),
                                 content = {
                                     Column {
@@ -318,6 +318,9 @@ fun IntroShowcaseScope.Content(modifier: Modifier) {
                 .padding(start = 16.dp, bottom = 16.dp)
                 .introShowCaseTarget(
                     index = 3,
+                    style = ShowcaseStyle(
+                        revealShape = RevealShape.Rounded(cornerRadius = 25f)
+                    ),
                     content = {
                         Column {
                             Text(
@@ -332,7 +335,7 @@ fun IntroShowcaseScope.Content(modifier: Modifier) {
                                 fontSize = 16.sp
                             )
                         }
-                    }
+                    },
                 )
         ) {
             Text(text = "Follow")
