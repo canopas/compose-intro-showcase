@@ -1,3 +1,5 @@
+<p align="center"> <a href="https://canopas.com/contact"><img width="100%" alt="cta_banner2" src="https://github.com/canopas/compose-intro-showcase/assets/74301808/1b111132-a7bf-4f23-ac40-d4a6f362f9d8"></a></p>
+
 # Intro Showcase View
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-Intro--showcase--view-green.svg?style=flat )]( https://android-arsenal.com/details/1/8387 )
 <img alt="Badge" height="20px" src="https://androidweekly.net/issues/issue-506/badge"> <img alt="Badge" height="20px" src="https://androidweekly.net/issues/issue-513/badge">
@@ -31,8 +33,10 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 
 # Credits
 
-Intro showcaseview is owned and maintained by the [Canopas team](https://canopas.com/). You can follow them on Twitter at [@canopassoftware](https://twitter.com/canopassoftware) for project updates and releases.
+Intro showcaseview is owned and maintained by the [Canopas team](https://canopas.com/). You can follow them on Twitter at [@canopassoftware](https://twitter.com/canopassoftware) for project updates and releases. If you are interested in building apps or designing products, please let us know. We'd love to hear from you!
 
+
+<a href="https://canopas.com/contact"><img src="https://github.com/canopas/your-space/assets/74301808/62aaffb6-1ab9-445d-a654-cdd1dd5bac94 width=300"></a>
 # Licence
 
 ```
