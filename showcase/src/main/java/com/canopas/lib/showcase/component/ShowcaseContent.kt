@@ -25,8 +25,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -36,6 +38,7 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.canopas.lib.showcase.data.RevealShape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -169,8 +172,8 @@ internal fun ShowcaseContent(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(target) {
-                    detectTapGestures { tapOffeset ->
-                        if (targetRect.contains(tapOffeset)) {
+                    detectTapGestures { tapOffset ->
+                        if (targetRect.contains(tapOffset)) {
                             dismissShowcaseRequest = true
                         }
                     }
@@ -185,28 +188,98 @@ internal fun ShowcaseContent(
                 }
                 .graphicsLayer(alpha = 0.99f)
         ) {
-            drawCircle(
-                color = target.style.backgroundColor,
-                center = outerOffset,
-                radius = outerRadius * outerAnimatable.value,
-                alpha = target.style.backgroundAlpha
-            )
+            when (target.style.revealShape) {
+                is RevealShape.Circle -> {
+                    drawCircle(
+                        color = target.style.backgroundColor,
+                        center = outerOffset,
+                        radius = outerRadius * outerAnimatable.value,
+                        alpha = target.style.backgroundAlpha
+                    )
 
-            dys.forEach { dy ->
-                drawCircle(
-                    color = target.style.targetCircleColor,
-                    radius = maxDimension * dy * 2f,
-                    center = targetRect.center,
-                    alpha = 1 - dy
-                )
+                    dys.forEach { dy ->
+                        drawCircle(
+                            color = target.style.targetCircleColor,
+                            radius = maxDimension * dy * 2f,
+                            center = targetRect.center,
+                            alpha = 1 - dy
+                        )
+                    }
+
+                    drawCircle(
+                        color = target.style.targetCircleColor,
+                        radius = targetRadius,
+                        center = targetRect.center,
+                        blendMode = BlendMode.Xor
+                    )
+                }
+
+                is RevealShape.Square -> {
+                    drawRect(
+                        color = target.style.backgroundColor,
+                        size = Size(outerRadius * 2, outerRadius * 2),
+                        topLeft = outerOffset - Offset(
+                            outerRadius * outerAnimatable.value,
+                            outerRadius * outerAnimatable.value
+                        ),
+                        alpha = target.style.backgroundAlpha
+                    )
+
+                    dys.forEach { dy ->
+                        drawRect(
+                            color = target.style.targetCircleColor,
+                            size = Size(maxDimension * dy * 4f, maxDimension * dy * 4f),
+                            topLeft = targetRect.center - Offset(
+                                maxDimension * dy * 2,
+                                maxDimension * dy * 2
+                            ),
+                            alpha = 1 - dy
+                        )
+                    }
+
+                    drawRect(
+                        color = target.style.targetCircleColor,
+                        size = Size(targetRadius * 2, targetRadius * 2),
+                        topLeft = targetRect.center - Offset(targetRadius, targetRadius),
+                        blendMode = BlendMode.Xor
+                    )
+                }
+
+                is RevealShape.Rounded -> {
+                    val cornerRadius = target.style.revealShape.cornerRadius ?: 20f
+                    drawRoundRect(
+                        color = target.style.backgroundColor,
+                        size = Size(outerRadius * 2, outerRadius * 2),
+                        topLeft = outerOffset - Offset(
+                            outerRadius * outerAnimatable.value,
+                            outerRadius * outerAnimatable.value
+                        ),
+                        cornerRadius = CornerRadius(cornerRadius),
+                        alpha = target.style.backgroundAlpha
+                    )
+
+                    dys.forEach { dy ->
+                        drawRoundRect(
+                            color = target.style.targetCircleColor,
+                            size = Size(maxDimension * dy * 4f, maxDimension * dy * 4f),
+                            topLeft = targetRect.center - Offset(
+                                maxDimension * dy * 2,
+                                maxDimension * dy * 2
+                            ),
+                            cornerRadius = CornerRadius(cornerRadius),
+                            alpha = 1 - dy
+                        )
+                    }
+
+                    drawRoundRect(
+                        color = target.style.targetCircleColor,
+                        size = Size(targetRadius * 2, targetRadius * 2),
+                        cornerRadius = CornerRadius(cornerRadius),
+                        topLeft = targetRect.center - Offset(targetRadius, targetRadius),
+                        blendMode = BlendMode.Xor
+                    )
+                }
             }
-
-            drawCircle(
-                color = target.style.targetCircleColor,
-                radius = targetRadius,
-                center = targetRect.center,
-                blendMode = BlendMode.Xor
-            )
         }
 
         ShowCaseText(target, targetRect, targetRadius) { textCoords ->
@@ -283,20 +356,23 @@ class ShowcaseStyle(
     val backgroundColor: Color = Color.Black,
     /*@FloatRange(from = 0.0, to = 1.0)*/
     val backgroundAlpha: Float = DEFAULT_BACKGROUND_RADIUS,
-    val targetCircleColor: Color = Color.White
+    val targetCircleColor: Color = Color.White,
+    val revealShape: RevealShape = RevealShape.Circle
 ) {
 
     fun copy(
         backgroundColor: Color = this.backgroundColor,
         /*@FloatRange(from = 0.0, to = 1.0)*/
         backgroundAlpha: Float = this.backgroundAlpha,
-        targetCircleColor: Color = this.targetCircleColor
+        targetCircleColor: Color = this.targetCircleColor,
+        revealShape: RevealShape = this.revealShape
     ): ShowcaseStyle {
 
         return ShowcaseStyle(
             backgroundColor = backgroundColor,
             backgroundAlpha = backgroundAlpha,
-            targetCircleColor = targetCircleColor
+            targetCircleColor = targetCircleColor,
+            revealShape = revealShape
         )
     }
 
