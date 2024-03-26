@@ -51,14 +51,16 @@ fun ShowcasePopup(
     onShowCaseCompleted: () -> Unit,
 ) {
     state.currentTarget?.let {
-        ShowcaseWindow {
-            ShowcaseContent(
-                target = it,
-                dismissOnClickOutside = dismissOnClickOutside
-            ) {
-                state.currentTargetIndex++
-                if (state.currentTarget == null) {
-                    onShowCaseCompleted()
+        if (it.coordinates.isAttached) {
+            ShowcaseWindow {
+                ShowcaseContent(
+                    target = it,
+                    dismissOnClickOutside = dismissOnClickOutside
+                ) {
+                    state.currentTargetIndex++
+                    if (state.currentTarget == null) {
+                        onShowCaseCompleted()
+                    }
                 }
             }
         }
