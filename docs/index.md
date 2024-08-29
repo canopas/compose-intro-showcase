@@ -89,7 +89,7 @@ fun ShowcaseSample() {
 
 ## How to add custom reveal shape ?
 
-For adding a custom reveal shape like a circle, rectangle, or any other shape, you can pass the custom shape to the `revealShape` parameter of `ShowcaseStyle` class.
+For adding a custom reveal shape like a circle, rectangle, or square, you can pass the shape to the `revealShape` parameter of `ShowcaseStyle` class.
 ```kotlin
 introShowCaseTarget(
     index = 3,
