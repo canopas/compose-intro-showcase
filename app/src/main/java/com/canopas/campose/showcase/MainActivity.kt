@@ -318,7 +318,7 @@ fun IntroShowcaseScope.Content(modifier: Modifier) {
                 .padding(start = 16.dp, bottom = 16.dp)
                 .introShowCaseTarget(
                     index = 3,
-                    style = ShowcaseStyle(
+                    style = ShowcaseStyle.Default.copy(
                         revealShape = RevealShape.Rounded(cornerRadius = 25f)
                     ),
                     content = {

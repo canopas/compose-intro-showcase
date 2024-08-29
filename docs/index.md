@@ -87,6 +87,34 @@ fun ShowcaseSample() {
 ```
 <img src="assets/intro2.gif" height="480" /> <img src="assets/intro3.gif" height="480" />
 
+## How to add custom reveal shape ?
+
+For adding a custom reveal shape like a circle, rectangle, or any other shape, you can pass the custom shape to the `revealShape` parameter of `ShowcaseStyle` class.
+```kotlin
+introShowCaseTarget(
+    index = 3,
+    style = ShowcaseStyle.Default.copy(
+        revealShape = RevealShape.Rounded(cornerRadius = 25f)
+    ),
+    content = {
+        Column {
+            Text(
+                text = "Follow me",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Click here to follow",
+                color = Color.White,
+                fontSize = 16.sp
+            )
+        }
+    },
+)
+```
+<img src="assets/reveal_shape.gif" height="480" />
+
 # Demo
 [Sample](https://github.com/canopas/compose-intro-showcase/tree/master/app) app demonstrates how simple the usage of the library actually is.
 
