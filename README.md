@@ -33,7 +33,7 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 
 # Credits
 
-Intro showcaseview is owned and maintained by the [Canopas team](https://canopas.com/). You can follow them on Twitter at [@canopassoftware](https://twitter.com/canopassoftware) for project updates and releases. If you are interested in building apps or designing products, please let us know. We'd love to hear from you!
+Intro showcaseview is owned and maintained by the [Canopas team](https://canopas.com/). You can follow them on X at [@canopas_eng](https://x.com/canopas_eng) for project updates and releases. If you are interested in building apps or designing products, please let us know. We'd love to hear from you!
 
 
 <a href="https://canopas.com/contact"><img src="https://github.com/canopas/your-space/assets/74301808/62aaffb6-1ab9-445d-a654-cdd1dd5bac94 width=300"></a>
